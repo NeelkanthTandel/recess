@@ -48,7 +48,7 @@ Themes are folders: `Name.recesstheme/Info.json` plus `Name.recesstheme/Document
 
 ## The website
 
-The landing page lives in [`site/`](site/): plain HTML and CSS, no build step and no JavaScript. Open `site/index.html` in a browser to preview it. Changes to `site/` are published to GitHub Pages when they're merged into `main`. Please keep it free of trackers, external fonts and third-party scripts.
+The landing page lives in [`site/`](site/): plain HTML and CSS, one small script (`app.js`) for the break demo, and a self-hosted font (Atkinson Hyperlegible Next, under the SIL Open Font License in `site/fonts/OFL.txt`). There's no build step: open `site/index.html` in a browser to preview it. Changes to `site/` are published to GitHub Pages when they're merged into `main`. Please keep it free of trackers, third-party scripts and requests to other sites.
 
 ## Releases
 

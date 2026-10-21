@@ -1,3 +1,5 @@
+<img src="site/assets/icon.png" alt="Recess app icon" width="96" height="96">
+
 # Recess
 
 **A free, open-source break reminder for macOS.** Recess dims your screen when it's time to rest your eyes, stretch or get up. You can postpone or skip when you're in the middle of something, and it notices when you've already stepped away.

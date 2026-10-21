@@ -3,161 +3,244 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recess: break reminders for your Mac</title>
-  <meta name="description" content="Recess is a free, open-source break reminder for macOS. It dims your screen when it's time to rest, notices when you've stepped away, and stays out of the way the rest of the time.">
+  <title>Recess: a break reminder for your Mac</title>
+  <meta name="description" content="Recess dims your Mac's screen when it's time to rest your eyes, stretch or get up. Free and open source, with no account and no tracking.">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Recess: break reminders for your Mac">
-  <meta property="og:description" content="A free, open-source break reminder for macOS.">
+  <meta property="og:title" content="Recess: a break reminder for your Mac">
+  <meta property="og:description" content="Recess dims your screen when it's time for a break. Free and open source.">
   <meta property="og:image" content="https://neelkanthtandel.github.io/recess/assets/break-screen.jpg">
   <meta property="og:type" content="website">
   <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="preload" href="fonts/AtkinsonHyperlegibleNext.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <a class="brand" href="./">
-        <img src="assets/icon.png" alt="" width="32" height="32">
-        <span>Recess</span>
-      </a>
-      <nav aria-label="Main">
-        <a href="#features">Features</a>
-        <a href="#first-launch">First launch</a>
-        <a href="https://github.com/NeelkanthTandel/recess">GitHub</a>
-      </nav>
-    </div>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <img src="assets/icon.png" alt="" width="30" height="30">
+      Recess
+    </a>
+    <nav aria-label="Main">
+      <a href="#hour">How it works</a>
+      <a href="#first-launch">Installing</a>
+      <a href="https://github.com/NeelkanthTandel/recess">Source code</a>
+    </nav>
   </header>
 
   <main id="main">
-    <section class="hero wrap">
-      <img class="hero-icon" src="assets/icon.png" alt="Recess app icon" width="104" height="104">
-      <h1>Breaks that actually happen.</h1>
-      <p class="lead">
-        Recess is a free, open-source break reminder for your Mac. It dims the screen when it's time to
-        rest your eyes, stretch or get up, notices when you've already stepped away, and stays out of the
-        way the rest of the time.
-      </p>
-      <div class="cta">
-        <a class="button primary" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg">
-          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download for macOS
-        </a>
-        <a class="button" href="https://github.com/NeelkanthTandel/recess">View source</a>
+    <!-- The hero is the product moment: a screen full of work, dimmed by a break. -->
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Look up from the&nbsp;screen.</h1>
+        <p class="hero-lead">
+          Recess dims your Mac when it's time to rest your eyes, stretch or get up, and gets out of
+          the way when you're back. If you've already walked off for a coffee, it noticed.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg">Download for Mac</a>
+          <button class="btn btn-quiet" type="button" data-try-break>Take a 20-second break</button>
+        </div>
+        <p class="hero-fine">Free and open source. For macOS 14 Sonoma and later, on Apple Silicon and Intel.</p>
       </div>
-      <p class="meta">Free &amp; open source · macOS 14 Sonoma or later · Apple Silicon and Intel</p>
-      <p class="meta"><a href="#first-launch">Opening it for the first time? Read this first.</a></p>
-    </section>
 
-    <section class="shot wrap" aria-label="Screenshot">
-      <figure class="window">
-        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-        <img src="assets/break-screen.jpg" width="1600" height="1000" loading="lazy"
-             alt="The Recess break screen: a countdown ring showing 10:00 remaining, a suggestion to stand up and stretch, and buttons to postpone or skip.">
+      <figure class="screen" aria-label="A Mac screen dimmed by a Recess break">
+        <div class="screen-menubar" aria-hidden="true">
+          <span class="menubar-apple"></span>
+          <span class="menubar-item">Editor</span>
+          <span class="menubar-item">File</span>
+          <span class="menubar-item">View</span>
+          <span class="menubar-spacer"></span>
+          <span class="menubar-recess"><img src="assets/icon.png" alt="" width="14" height="14"><span data-menubar-countdown>0s</span></span>
+        </div>
+        <div class="screen-work" aria-hidden="true">
+          <div class="work-window">
+            <div class="work-lines">
+              <i style="width: 62%"></i><i style="width: 88%"></i><i style="width: 74%"></i><i style="width: 40%"></i>
+              <i class="gap" style="width: 0"></i>
+              <i style="width: 81%"></i><i style="width: 69%"></i><i style="width: 92%"></i><i style="width: 55%"></i>
+              <i class="gap" style="width: 0"></i>
+              <i style="width: 77%"></i><i style="width: 48%"></i>
+            </div>
+          </div>
+        </div>
+        <div class="screen-break" data-hero-break>
+          <div class="clock clock-small">
+            <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+              <circle class="ring-progress" cx="60" cy="60" r="52" pathLength="100"></circle>
+            </svg>
+            <p class="clock-time" data-hero-time>0:20</p>
+          </div>
+          <p class="screen-tip">Look at something far away.</p>
+          <p class="screen-buttons" aria-hidden="true"><span>Postpone 1 minute</span><span>Skip this break</span></p>
+        </div>
+        <figcaption class="visually-hidden">
+          Recess dims the screen with a countdown and a suggestion. You can postpone or skip if you're in the middle of something.
+        </figcaption>
       </figure>
     </section>
 
-    <section id="first-launch" class="wrap">
-      <div class="notice">
-        <h2>First launch: one extra step</h2>
+    <!-- A real timeline of the default schedule. -->
+    <section class="hour" id="hour" aria-labelledby="hour-title">
+      <div class="hour-intro">
+        <h2 id="hour-title">An hour with Recess</h2>
         <p>
-          Recess isn't notarized by Apple yet, so the first time you open it macOS will say it can't verify
-          the app. That's expected; you only have to allow it once.
+          Out of the box you get two kinds of break: a few seconds every quarter hour to unclench and
+          look across the room, and ten minutes each hour to properly get up. Change either, or add
+          your own.
         </p>
-        <ol class="steps">
-          <li>Open <strong>Recess.dmg</strong> and drag <strong>Recess</strong> into <strong>Applications</strong>.</li>
-          <li>Open Recess from Applications. When macOS says it can't verify it, click <strong>Done</strong>.</li>
-          <li>Open <strong>System Settings › Privacy &amp; Security</strong>, scroll down to <strong>Security</strong>,
-            and click <strong>Open Anyway</strong> next to Recess.</li>
-          <li>Confirm with your password or Touch ID, then click <strong>Open</strong>.</li>
+      </div>
+
+      <div class="timeline" role="img" aria-label="A 60-minute timeline: 20-second micro-breaks at 15, 30 and 45 minutes, and a 10-minute break from 50 to 60 minutes.">
+        <div class="timeline-bar">
+          <span class="tick" style="left: 25%"></span>
+          <span class="tick" style="left: 50%"></span>
+          <span class="tick" style="left: 75%"></span>
+          <span class="rest" style="left: 83.333%; width: 16.667%"></span>
+        </div>
+        <div class="timeline-scale" aria-hidden="true">
+          <span style="left: 0">0</span>
+          <span style="left: 25%">15</span>
+          <span style="left: 50%">30</span>
+          <span style="left: 75%">45</span>
+          <span style="left: 100%">60 min</span>
+        </div>
+        <div class="timeline-key" aria-hidden="true">
+          <span><i class="key-tick"></i>Micro-break, 15 seconds</span>
+          <span><i class="key-rest"></i>Normal break, 10 minutes</span>
+        </div>
+      </div>
+
+      <ol class="moments">
+        <li>
+          <h3>A heads-up</h3>
+          <p>A minute before a longer break, a notification gives you time to finish your sentence.</p>
+        </li>
+        <li>
+          <h3>The screen dims</h3>
+          <p>A countdown, a calm theme and a suggestion. Postpone or skip if you really have to.</p>
+        </li>
+        <li>
+          <h3>Back to work</h3>
+          <p>The screen comes back by itself. Stepped away or closed the lid already? That counted as a break.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="details" aria-labelledby="details-title">
+      <h2 id="details-title" class="details-title">Small details that make it stick</h2>
+      <div class="detail-groups">
+        <div class="detail-group">
+          <h3>Fits around your day</h3>
+          <ul>
+            <li>Start on time, wait until you stop typing, or ask first.</li>
+            <li>Only during work hours, only on weekdays, or timed from your calendar.</li>
+            <li>Holds off during video calls, presentations and fullscreen apps.</li>
+            <li>Time away from the keyboard and sleep count as rest.</li>
+          </ul>
+        </div>
+        <div class="detail-group">
+          <h3>Keeps you honest</h3>
+          <ul>
+            <li>Cap how many times a day you're allowed to postpone or skip.</li>
+            <li>Lock the buttons for the first few seconds of a break.</li>
+            <li>Optionally block Cmd-Tab and Force Quit while a break is on.</li>
+            <li>A chart of breaks taken, postponed and skipped.</li>
+          </ul>
+        </div>
+        <div class="detail-group">
+          <h3>Yours to shape</h3>
+          <ul>
+            <li>Break screens with a breathing guide, clocks, eye and desk stretches, or your own text, photos or video.</li>
+            <li>Sounds, spoken reminders and your own AppleScript or shell scripts.</li>
+            <li>A countdown in the menu bar and global keyboard shortcuts.</li>
+            <li><code>recess://</code> links for Shortcuts and automation.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="install" id="first-launch" aria-labelledby="install-title">
+      <div class="install-copy">
+        <h2 id="install-title">Installing, and the one-time prompt</h2>
+        <p>
+          Recess isn't notarized by Apple yet, so the first time you open it macOS asks you to confirm.
+          It takes ten seconds, and you only do it once.
+        </p>
+        <ol class="install-steps">
+          <li>Open <b>Recess.dmg</b> and drag Recess into Applications.</li>
+          <li>Open Recess. When macOS says it can't verify the app, click <b>Done</b>.</li>
+          <li>In <b>System Settings › Privacy &amp; Security</b>, scroll to Security and click <b>Open Anyway</b>.</li>
+          <li>Confirm with Touch ID or your password, then click <b>Open</b>.</li>
         </ol>
-        <details>
-          <summary>Prefer the Terminal?</summary>
-          <p>After copying the app to Applications, remove the download flag and open it:</p>
+        <details class="install-terminal">
+          <summary>Rather use Terminal?</summary>
           <pre><code>xattr -dr com.apple.quarantine /Applications/Recess.app
 open /Applications/Recess.app</code></pre>
         </details>
-        <p class="small">
-          Why the warning? Apple only skips it for apps signed through its paid developer programme.
-          Recess is open source, so you can <a href="https://github.com/NeelkanthTandel/recess">read every line</a>
-          or <a href="#build">build it yourself</a> instead. Each release lists the DMG's SHA-256 checksum too.
-        </p>
       </div>
+
+      <figure class="settings-mock" aria-label="Where to find Open Anyway in System Settings">
+        <div class="settings-head" aria-hidden="true">
+          <span class="settings-dot"></span><span class="settings-dot"></span><span class="settings-dot"></span>
+          <span class="settings-title">Privacy &amp; Security</span>
+        </div>
+        <div class="settings-body">
+          <p class="settings-section">Security</p>
+          <div class="settings-row">
+            <span>“Recess” was blocked to protect your Mac.</span>
+            <span class="settings-button">Open Anyway</span>
+          </div>
+        </div>
+        <figcaption>
+          The prompt appears because Recess is signed by its author rather than through Apple's paid
+          programme. The code is all <a href="https://github.com/NeelkanthTandel/recess">on GitHub</a>,
+          and every release lists the download's SHA-256 checksum.
+        </figcaption>
+      </figure>
     </section>
 
-    <section id="features" class="wrap">
-      <h2 class="section-title">Everything a good break reminder should do</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>Breaks your way</h3>
-          <p>Start with a 10-minute break every hour and a 15-second micro-break every 15 minutes, or make your own.</p>
-        </article>
-        <article class="card">
-          <h3>Knows when you're away</h3>
-          <p>Stepping away or putting the Mac to sleep counts as a break, so you're not nagged the moment you sit back down.</p>
-        </article>
-        <article class="card">
-          <h3>Flexible timing</h3>
-          <p>Time breaks from when the last one was due or ended, at set minutes past the hour, or from your calendar. Limit them to work hours and weekdays.</p>
-        </article>
-        <article class="card">
-          <h3>Gentle or strict</h3>
-          <p>Start on time, wait for a pause in your typing, or ask first. Postpone, skip or end early, and cap how often you're allowed to.</p>
-        </article>
-        <article class="card">
-          <h3>Calm break screens</h3>
-          <p>A countdown ring, a breathing guide, clocks, eye-rest and desk-stretch routines, or your own text, website, video or photos.</p>
-        </article>
-        <article class="card">
-          <h3>Smart rules</h3>
-          <p>Hold breaks during video calls, presentations, fullscreen apps, Focus or calendar events, or whenever your own script says so.</p>
-        </article>
-        <article class="card">
-          <h3>Actions</h3>
-          <p>A heads-up notification before a break, sounds, spoken reminders, a screen flash, or your own AppleScript and shell scripts.</p>
-        </article>
-        <article class="card">
-          <h3>Menu bar &amp; shortcuts</h3>
-          <p>A live countdown in the menu bar, global keyboard shortcuts, and <code>recess://</code> links for automation.</p>
-        </article>
-        <article class="card">
-          <h3>See how you're doing</h3>
-          <p>A log and chart of breaks taken, postponed and skipped, and optionally how long you spend in each app.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="wrap privacy">
-      <h2 class="section-title">Private by design</h2>
-      <ul class="pills" aria-label="Privacy facts">
-        <li>No account</li>
-        <li>No analytics</li>
-        <li>No network calls of its own</li>
-        <li>Settings stay on your Mac as plain files</li>
-        <li>MIT licensed</li>
-      </ul>
-    </section>
-
-    <section id="build" class="wrap">
-      <h2 class="section-title">Build it yourself</h2>
-      <p class="center">With Xcode 16 or later installed:</p>
-      <pre class="code"><code>git clone https://github.com/NeelkanthTandel/recess.git
-cd recess
-make install   # builds, copies to ~/Applications and opens it</code></pre>
+    <section class="open" aria-labelledby="open-title">
+      <h2 id="open-title">Nothing leaves your Mac</h2>
+      <p>
+        No account, no analytics, and no network requests of its own. Your settings are plain files in
+        your Library folder. Recess is MIT licensed, so you can read every line, or build it yourself:
+      </p>
+      <pre class="build"><code>git clone https://github.com/NeelkanthTandel/recess.git
+cd recess &amp;&amp; make install</code></pre>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="wrap footer-inner">
-      <p>Recess is free software under the <a href="https://github.com/NeelkanthTandel/recess/blob/main/LICENSE">MIT License</a>.</p>
-      <p>
-        <a href="https://github.com/NeelkanthTandel/recess">Source</a> ·
-        <a href="https://github.com/NeelkanthTandel/recess/releases">Releases</a> ·
-        <a href="https://github.com/NeelkanthTandel/recess/issues">Report a problem</a> ·
-        <a href="https://github.com/NeelkanthTandel/recess/blob/main/SECURITY.md">Security</a>
-      </p>
-    </div>
+    <p>Recess is free software under the <a href="https://github.com/NeelkanthTandel/recess/blob/main/LICENSE">MIT License</a>. Set in Atkinson Hyperlegible Next, a typeface designed by the Braille Institute for easier reading.</p>
+    <nav aria-label="Project">
+      <a href="https://github.com/NeelkanthTandel/recess/releases">Releases</a>
+      <a href="https://github.com/NeelkanthTandel/recess/issues">Report a problem</a>
+      <a href="https://github.com/NeelkanthTandel/recess/blob/main/SECURITY.md">Security</a>
+    </nav>
   </footer>
+
+  <!-- The full-page break started by "Take a 20-second break". -->
+  <div class="break" role="dialog" aria-modal="true" aria-labelledby="break-title" hidden data-break>
+    <div class="break-inner">
+      <div class="clock clock-large">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+          <circle class="ring-progress" cx="60" cy="60" r="52" pathLength="100" data-break-ring></circle>
+        </svg>
+        <p class="clock-time" data-break-time aria-hidden="true">0:20</p>
+      </div>
+      <h2 class="break-title" id="break-title" data-break-title>Look at something far away</h2>
+      <p class="break-tip" data-break-tip>Let your eyes relax on something at least six metres away. The page comes back by itself.</p>
+      <div class="break-actions">
+        <button type="button" class="break-button" data-break-close="postpone">Postpone 1 minute</button>
+        <button type="button" class="break-button" data-break-close="skip">Skip this break</button>
+      </div>
+      <p class="break-status visually-hidden" aria-live="polite" data-break-status></p>
+    </div>
+  </div>
 </body>
 </html>
