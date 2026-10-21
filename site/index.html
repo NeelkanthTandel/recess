@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recess: break reminders for your Mac</title>
+  <meta name="description" content="Recess is a free, open-source break reminder for macOS. It dims your screen when it's time to rest, notices when you've stepped away, and stays out of the way the rest of the time.">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:title" content="Recess: break reminders for your Mac">
+  <meta property="og:description" content="A free, open-source break reminder for macOS.">
+  <meta property="og:image" content="https://neelkanthtandel.github.io/recess/assets/break-screen.jpg">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="./">
+        <img src="assets/icon.png" alt="" width="32" height="32">
+        <span>Recess</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#first-launch">First launch</a>
+        <a href="https://github.com/NeelkanthTandel/recess">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap">
+      <img class="hero-icon" src="assets/icon.png" alt="Recess app icon" width="104" height="104">
+      <h1>Breaks that actually happen.</h1>
+      <p class="lead">
+        Recess is a free, open-source break reminder for your Mac. It dims the screen when it's time to
+        rest your eyes, stretch or get up, notices when you've already stepped away, and stays out of the
+        way the rest of the time.
+      </p>
+      <div class="cta">
+        <a class="button primary" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download for macOS
+        </a>
+        <a class="button" href="https://github.com/NeelkanthTandel/recess">View source</a>
+      </div>
+      <p class="meta">Free &amp; open source · macOS 14 Sonoma or later · Apple Silicon and Intel</p>
+      <p class="meta"><a href="#first-launch">Opening it for the first time? Read this first.</a></p>
+    </section>
+
+    <section class="shot wrap" aria-label="Screenshot">
+      <figure class="window">
+        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+        <img src="assets/break-screen.jpg" width="1600" height="1000" loading="lazy"
+             alt="The Recess break screen: a countdown ring showing 10:00 remaining, a suggestion to stand up and stretch, and buttons to postpone or skip.">
+      </figure>
+    </section>
+
+    <section id="first-launch" class="wrap">
+      <div class="notice">
+        <h2>First launch: one extra step</h2>
+        <p>
+          Recess isn't notarized by Apple yet, so the first time you open it macOS will say it can't verify
+          the app. That's expected; you only have to allow it once.
+        </p>
+        <ol class="steps">
+          <li>Open <strong>Recess.dmg</strong> and drag <strong>Recess</strong> into <strong>Applications</strong>.</li>
+          <li>Open Recess from Applications. When macOS says it can't verify it, click <strong>Done</strong>.</li>
+          <li>Open <strong>System Settings › Privacy &amp; Security</strong>, scroll down to <strong>Security</strong>,
+            and click <strong>Open Anyway</strong> next to Recess.</li>
+          <li>Confirm with your password or Touch ID, then click <strong>Open</strong>.</li>
+        </ol>
+        <details>
+          <summary>Prefer the Terminal?</summary>
+          <p>After copying the app to Applications, remove the download flag and open it:</p>
+          <pre><code>xattr -dr com.apple.quarantine /Applications/Recess.app
+open /Applications/Recess.app</code></pre>
+        </details>
+        <p class="small">
+          Why the warning? Apple only skips it for apps signed through its paid developer programme.
+          Recess is open source, so you can <a href="https://github.com/NeelkanthTandel/recess">read every line</a>
+          or <a href="#build">build it yourself</a> instead. Each release lists the DMG's SHA-256 checksum too.
+        </p>
+      </div>
+    </section>
+
+    <section id="features" class="wrap">
+      <h2 class="section-title">Everything a good break reminder should do</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Breaks your way</h3>
+          <p>Start with a 10-minute break every hour and a 15-second micro-break every 15 minutes, or make your own.</p>
+        </article>
+        <article class="card">
+          <h3>Knows when you're away</h3>
+          <p>Stepping away or putting the Mac to sleep counts as a break, so you're not nagged the moment you sit back down.</p>
+        </article>
+        <article class="card">
+          <h3>Flexible timing</h3>
+          <p>Time breaks from when the last one was due or ended, at set minutes past the hour, or from your calendar. Limit them to work hours and weekdays.</p>
+        </article>
+        <article class="card">
+          <h3>Gentle or strict</h3>
+          <p>Start on time, wait for a pause in your typing, or ask first. Postpone, skip or end early, and cap how often you're allowed to.</p>
+        </article>
+        <article class="card">
+          <h3>Calm break screens</h3>
+          <p>A countdown ring, a breathing guide, clocks, eye-rest and desk-stretch routines, or your own text, website, video or photos.</p>
+        </article>
+        <article class="card">
+          <h3>Smart rules</h3>
+          <p>Hold breaks during video calls, presentations, fullscreen apps, Focus or calendar events, or whenever your own script says so.</p>
+        </article>
+        <article class="card">
+          <h3>Actions</h3>
+          <p>A heads-up notification before a break, sounds, spoken reminders, a screen flash, or your own AppleScript and shell scripts.</p>
+        </article>
+        <article class="card">
+          <h3>Menu bar &amp; shortcuts</h3>
+          <p>A live countdown in the menu bar, global keyboard shortcuts, and <code>recess://</code> links for automation.</p>
+        </article>
+        <article class="card">
+          <h3>See how you're doing</h3>
+          <p>A log and chart of breaks taken, postponed and skipped, and optionally how long you spend in each app.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap privacy">
+      <h2 class="section-title">Private by design</h2>
+      <ul class="pills" aria-label="Privacy facts">
+        <li>No account</li>
+        <li>No analytics</li>
+        <li>No network calls of its own</li>
+        <li>Settings stay on your Mac as plain files</li>
+        <li>MIT licensed</li>
+      </ul>
+    </section>
+
+    <section id="build" class="wrap">
+      <h2 class="section-title">Build it yourself</h2>
+      <p class="center">With Xcode 16 or later installed:</p>
+      <pre class="code"><code>git clone https://github.com/NeelkanthTandel/recess.git
+cd recess
+make install   # builds, copies to ~/Applications and opens it</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Recess is free software under the <a href="https://github.com/NeelkanthTandel/recess/blob/main/LICENSE">MIT License</a>.</p>
+      <p>
+        <a href="https://github.com/NeelkanthTandel/recess">Source</a> ·
+        <a href="https://github.com/NeelkanthTandel/recess/releases">Releases</a> ·
+        <a href="https://github.com/NeelkanthTandel/recess/issues">Report a problem</a> ·
+        <a href="https://github.com/NeelkanthTandel/recess/blob/main/SECURITY.md">Security</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

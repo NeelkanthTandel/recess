@@ -2,6 +2,8 @@
 
 **A free, open-source break reminder for macOS.** Recess dims your screen when it's time to rest your eyes, stretch or get up. You can postpone or skip when you're in the middle of something, and it notices when you've already stepped away.
 
+**[Download Recess.dmg](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg)** · [Website](https://neelkanthtandel.github.io/recess/) · macOS 14+, Apple Silicon and Intel
+
 [![CI](https://github.com/NeelkanthTandel/recess/actions/workflows/ci.yml/badge.svg)](https://github.com/NeelkanthTandel/recess/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-lightgrey)
@@ -23,15 +25,32 @@
 
 ## Install
 
-Recess isn't notarized yet, so build it yourself. It takes about a minute:
+1. Download **[Recess.dmg](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg)** from the [latest release](https://github.com/NeelkanthTandel/recess/releases/latest).
+2. Open it and drag **Recess** into **Applications**.
+
+Requires macOS 14 Sonoma or later, on Apple Silicon or Intel.
+
+### First launch
+
+Recess isn't notarized by Apple yet, so the first time you open it macOS says it can't verify the app. You only need to allow it once:
+
+1. Open Recess. When macOS says it can't verify it, click **Done**.
+2. Open **System Settings › Privacy & Security**, scroll down to **Security**, and click **Open Anyway** next to Recess.
+3. Confirm with your password or Touch ID, then click **Open**.
+
+Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/Recess.app`
+
+Each release lists the DMG's SHA-256 checksum, so you can check your download with `shasum -a 256 Recess.dmg`.
+
+### Build from source
+
+Prefer to build it yourself? It takes about a minute with Xcode 16 or later:
 
 ```bash
 git clone https://github.com/NeelkanthTandel/recess.git
 cd recess
 make install        # builds a release app, copies it to ~/Applications and opens it
 ```
-
-Requirements: macOS 14 Sonoma or later and Xcode 16+ (or the matching command-line tools).
 
 On first launch a short setup assistant helps you choose your breaks. Recess then lives in the menu bar.
 
