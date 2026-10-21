@@ -48,7 +48,7 @@ Themes are folders: `Name.recesstheme/Info.json` plus `Name.recesstheme/Document
 
 ## The website
 
-The landing page lives in [`site/`](site/): plain HTML and CSS, one small script (`app.js`) for the break demo, and a self-hosted font (Atkinson Hyperlegible Next, under the SIL Open Font License in `site/fonts/OFL.txt`). There's no build step: open `site/index.html` in a browser to preview it. Changes to `site/` are published to GitHub Pages when they're merged into `main`. Please keep it free of trackers, third-party scripts and requests to other sites.
+The landing page lives in [`site/`](site/): plain HTML and CSS, one small script (`app.js`) for the break demos, and two self-hosted fonts (Instrument Serif and Atkinson Hyperlegible Next, each under the SIL Open Font License, with the licence texts beside them in `site/fonts/`). The sky and night backgrounds are drawn in SVG; their sources, and how to re-render them, are in [`docs/site-art/`](docs/site-art/). There's no build step: open `site/index.html` in a browser to preview it. Changes to `site/` are published to GitHub Pages when they're merged into `main`. Please keep it free of trackers, third-party scripts and requests to other sites.
 
 ## Releases
 

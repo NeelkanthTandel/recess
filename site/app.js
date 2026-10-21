@@ -1,4 +1,4 @@
-// Recess site: the hero's break sequence and the "Take a 20-second break" demo.
+// Recess site: the hero screen's break, and the 20-second break in the night section.
 // No dependencies, no network requests, no storage.
 (() => {
   "use strict";
@@ -6,27 +6,25 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const format = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-  // Hero: the screen dims once, counts down a short break, then the work comes back.
+  // Hero: the floating screen dims once into a short break, then the work comes back.
   const hero = document.querySelector("[data-hero-break]");
   const heroTime = document.querySelector("[data-hero-time]");
-  const menubar = document.querySelector("[data-menubar-countdown]");
-
+  const menubar = document.querySelector("[data-menubar]");
   if (hero && heroTime && menubar) {
     const length = 20;
     if (reduceMotion) {
       hero.classList.add("is-on", "is-static");
       menubar.textContent = "now";
     } else {
-      let left = 2;
-      menubar.textContent = `${left}s`;
-      const lead = setInterval(() => {
-        left -= 1;
-        menubar.textContent = left > 0 ? `${left}s` : "now";
-        if (left > 0) return;
-        clearInterval(lead);
+      let lead = 3;
+      menubar.textContent = `${lead}s`;
+      const countIn = setInterval(() => {
+        lead -= 1;
+        menubar.textContent = lead > 0 ? `${lead}s` : "now";
+        if (lead > 0) return;
+        clearInterval(countIn);
         hero.classList.add("is-on");
         let remaining = length;
-        hero.style.setProperty("--progress", "1");
         const tick = setInterval(() => {
           remaining -= 1;
           heroTime.textContent = format(remaining);
@@ -40,94 +38,74 @@
     }
   }
 
-  // Full-page break.
-  const overlay = document.querySelector("[data-break]");
-  const opener = document.querySelector("[data-try-break]");
-  if (!overlay || !opener) return;
-
-  const time = overlay.querySelector("[data-break-time]");
-  const ring = overlay.querySelector("[data-break-ring]");
-  const title = overlay.querySelector("[data-break-title]");
-  const tip = overlay.querySelector("[data-break-tip]");
-  const status = overlay.querySelector("[data-break-status]");
-  const buttons = [...overlay.querySelectorAll("[data-break-close]")];
+  // Night: a real 20-second break, on the giant arc.
+  const night = document.querySelector("[data-night]");
+  if (!night) return;
+  const arc = night.querySelector(".arc-svg");
+  const time = night.querySelector("[data-arc-time]");
+  const title = night.querySelector("[data-night-title]");
+  const text = night.querySelector("[data-night-text]");
+  const start = night.querySelector("[data-arc-start]");
+  const stop = night.querySelector("[data-arc-stop]");
+  const status = night.querySelector("[data-arc-status]");
   const length = 20;
+  const idle = { title: title.textContent, text: text.textContent };
   let timer = null;
-  let returnFocus = null;
 
-  const setRemaining = (s) => {
+  const show = (s) => {
     time.textContent = format(s);
-    ring.style.setProperty("--progress", String(s / length));
+    arc.style.setProperty("--progress", String(s / length));
   };
 
-  const close = () => {
+  const reset = (message) => {
     clearInterval(timer);
     timer = null;
-    overlay.classList.remove("is-on");
-    document.documentElement.classList.remove("is-resting");
-    const finish = () => {
-      overlay.hidden = true;
-      buttons.forEach((b) => (b.hidden = false));
-      if (returnFocus) returnFocus.focus();
-    };
-    if (reduceMotion) finish(); else setTimeout(finish, 600);
+    night.classList.remove("is-resting");
+    stop.hidden = true;
+    start.hidden = false;
+    start.textContent = message ? "Take another" : "Start the break";
+    if (message) {
+      title.textContent = message.title;
+      text.textContent = message.text;
+      status.textContent = message.title;
+    } else {
+      title.textContent = idle.title;
+      text.textContent = idle.text;
+      show(length);
+    }
   };
 
-  const open = () => {
-    returnFocus = document.activeElement;
-    title.textContent = "Look at something far away";
-    tip.textContent = "Let your eyes relax on something at least six metres away. The page comes back by itself.";
-    status.textContent = "";
-    setRemaining(length);
-    overlay.hidden = false;
-    document.documentElement.classList.add("is-resting");
-    requestAnimationFrame(() => overlay.classList.add("is-on"));
-    buttons[0].focus();
-
+  const begin = () => {
+    clearInterval(timer);
     let remaining = length;
+    show(remaining);
+    night.classList.add("is-resting");
+    title.textContent = "Look at something far away.";
+    text.textContent = "Let your eyes settle on the furthest thing you can see. The page will wait.";
+    status.textContent = "Break started, 20 seconds.";
+    start.hidden = true;
+    stop.hidden = false;
+    stop.focus({ preventScroll: true });
     timer = setInterval(() => {
       remaining -= 1;
-      setRemaining(remaining);
+      show(remaining);
       if (remaining > 0) return;
-      clearInterval(timer);
-      title.textContent = "That's a break";
-      tip.textContent = "Twenty seconds, done. Recess keeps that rhythm going all day.";
-      status.textContent = "Break finished.";
-      buttons.forEach((b) => (b.hidden = true));
-      setTimeout(() => close(), 2200);
+      reset({ title: "That's a break.", text: "Twenty seconds, done. Recess keeps that rhythm going all day." });
     }, 1000);
   };
 
-  opener.addEventListener("click", open);
+  start.addEventListener("click", begin);
+  stop.addEventListener("click", () => reset());
+  night.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && timer) reset();
+  });
 
-  buttons.forEach((b) =>
-    b.addEventListener("click", () => {
-      // In the app these buttons really postpone or skip; here they just end the demo.
-      close();
+  // "Take a 20-second break" in the hero: go to the night and start.
+  document.querySelectorAll("[data-start-break]").forEach((link) =>
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      night.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      setTimeout(begin, reduceMotion ? 0 : 650);
     })
   );
-
-  overlay.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      close();
-      return;
-    }
-    if (e.key !== "Tab") return;
-    // Keep keyboard focus inside the break while it's showing.
-    const visible = buttons.filter((b) => !b.hidden);
-    if (visible.length === 0) {
-      e.preventDefault();
-      return;
-    }
-    const first = visible[0];
-    const last = visible[visible.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  });
 })();
