@@ -248,6 +248,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
         static func snapshotWindows(name: String) {
             let folder = Store.subfolder("Snapshots")
+            try? StatusItemController.shared.debugStatus.write(
+                to: folder.appendingPathComponent("\(name)-status.txt"), atomically: true, encoding: .utf8)
             for (i, w) in NSApp.windows.enumerated() where w.isVisible {
                 guard let view = w.contentView?.superview ?? w.contentView,
                     let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds)

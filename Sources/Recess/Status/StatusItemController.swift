@@ -28,6 +28,13 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         }
     }
 
+    #if DEBUG
+        /// The current menu bar title and tooltip, for the debug snapshot hook.
+        var debugStatus: String {
+            "title: \(item?.button?.attributedTitle.string ?? "")\ntooltip: \(item?.button?.toolTip ?? "")"
+        }
+    #endif
+
     // MARK: - Title
 
     private func refresh() {
@@ -57,6 +64,11 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             title = "\(active.name) \(Format.countdown(session.remaining))"
         } else if model.allPaused {
             title = "Paused"
+        } else if let next, Scheduler.shared.waitingDescription(for: next, now: now) != nil,
+            [.briefCountdown, .fullCountdown].contains(s.statusTitle)
+        {
+            // A due break that's waiting to start: say so rather than showing "0s".
+            title = "waiting"
         } else {
             switch s.statusTitle {
             case .onlyIcon: title = ""
@@ -85,6 +97,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
     private func tooltip(_ next: Break?) -> String {
         guard let next, let due = dueDate(next) else { return "Recess — no breaks scheduled" }
+        if let waiting = Scheduler.shared.waitingDescription(for: next, now: model.now) {
+            return "\(next.name) break is \(waiting)\nOption-click for quick commands."
+        }
         var s = "\(next.name) break due \(Format.relative(due, from: model.now))"
         if let last = next.state.lastDone { s += " (last done \(Format.full(model.now.timeIntervalSince(last))) ago)" }
         return s + "\nOption-click for quick commands."
@@ -198,6 +213,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         if model.activeBreakID == b.id { return "now" }
         guard let due = b.state.nextDue else { return "" }
         if due == .distantFuture { return "no upcoming events" }
+        if let waiting = Scheduler.shared.waitingDescription(for: b, now: model.now) { return waiting }
         return "due " + model.dateString(due)
     }
 

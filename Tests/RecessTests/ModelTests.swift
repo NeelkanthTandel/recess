@@ -66,6 +66,13 @@ final class BreakTests: XCTestCase {
         XCTAssertEqual(c.totalPostpone, 9)
     }
 
+    func testNewBreaksStartOnTimeByDefault() {
+        // Waiting for a pause can make a break up to a minute late, so it has to be chosen explicitly.
+        XCTAssertEqual(BreakSchedule().dueBehavior, .startImmediately)
+        XCTAssertEqual(Break.makeNormal().schedule.dueBehavior, .startImmediately)
+        XCTAssertEqual(Break.makeMicro().schedule.dueBehavior, .startImmediately)
+    }
+
     func testIntervalsFromHandEditedFilesAreClamped() {
         var b = Break()
         b.schedule.frequency = Interval(.nan, .minutes)

@@ -232,6 +232,7 @@ struct BreakRow: View {
         if !b.enabled { return "Disabled" }
         if model.activeBreakID == b.id { return "Having the break now" }
         if b.isPaused { return b.state.pausedUntil == .distantFuture ? "Paused" : "Paused until \(Format.time(b.state.pausedUntil!))" }
+        if let waiting = Scheduler.shared.waitingDescription(for: b, now: ticker.now) { return "Due now; \(waiting)" }
         return "Next: \(model.dateString(b.state.nextDue))"
     }
 }

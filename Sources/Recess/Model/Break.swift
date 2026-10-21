@@ -40,6 +40,18 @@ enum DueBehavior: String, Codable, CaseIterable, Identifiable {
         case .ask: "Ask me first"
         }
     }
+
+    /// What this choice means in practice; shown in the setup assistant and on the Schedule tab.
+    var explanation: String {
+        switch self {
+        case .startImmediately:
+            "The screen dims exactly on time, even mid-sentence. Predictable, and the best way to build the habit."
+        case .waitForNaturalBreak:
+            "Recess waits until you stop typing and mousing for \(Int(Scheduler.pauseLength)) seconds, so you're not interrupted mid-thought. If you never pause, the break starts anyway after \(Int(Scheduler.longestWait)) seconds, so it can arrive up to a minute late."
+        case .ask:
+            "A small panel appears with Start, Postpone and Skip buttons. If you don't answer, the break starts on its own after a minute."
+        }
+    }
 }
 
 enum Availability: String, Codable, CaseIterable, Identifiable {
@@ -67,7 +79,7 @@ struct BreakSchedule: Codable, Hashable {
     var resetWhenFinishingHigherPriority: Bool = true
     var skipForHigherPriority: Bool = true
     var skipForHigherPriorityInterval: Interval = .minutes(5)
-    var dueBehavior: DueBehavior = .waitForNaturalBreak
+    var dueBehavior: DueBehavior = .startImmediately
     var askAutoStart: Interval = .minutes(1)
 
     /// The fields that decide when the break happens; editing any of them re-times the break.

@@ -41,20 +41,23 @@ private struct SetupView: View {
     @State private var microDuration = Interval.seconds(15)
     @State private var microFrequency = Interval.minutes(15)
     @State private var launchAtLogin = true
+    @State private var dueBehavior: DueBehavior = .startImmediately
+    private let lastStep = 3
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             switch step {
             case 0: welcome
             case 1: breaks
+            case 2: starting
             default: finish
             }
             Spacer()
             HStack {
                 if step > 0 { Button("Back") { step -= 1 } }
                 Spacer()
-                Button(step == 2 ? "Done" : "Continue") {
-                    if step == 2 { apply(); done() } else { step += 1 }
+                Button(step == lastStep ? "Done" : "Continue") {
+                    if step == lastStep { apply(); done() } else { step += 1 }
                 }
                 .keyboardShortcut(.defaultAction)
             }
@@ -64,6 +67,7 @@ private struct SetupView: View {
         .onAppear {
             if let n = model.breaks.first(where: { $0.name == "Normal" }) {
                 normalDuration = n.schedule.duration; normalFrequency = n.schedule.frequency
+                dueBehavior = n.schedule.dueBehavior
             }
             if let m = model.breaks.first(where: { $0.name == "Micro" }) {
                 microDuration = m.schedule.duration; microFrequency = m.schedule.frequency
@@ -111,6 +115,25 @@ private struct SetupView: View {
         }
     }
 
+    /// An explicit choice, so nobody is surprised by a break that waits (or one that doesn't).
+    private var starting: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("When a break is due").font(.title.weight(.semibold))
+            Text("Choose how a break begins. You can change this for each break later, on its Schedule tab.")
+                .foregroundStyle(.secondary)
+            Picker("", selection: $dueBehavior) {
+                ForEach(DueBehavior.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.radioGroup)
+            .labelsHidden()
+            GroupBox {
+                Text(dueBehavior.explanation)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(6)
+            }
+        }
+    }
+
     private var finish: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Almost done").font(.title.weight(.semibold))
@@ -134,11 +157,13 @@ private struct SetupView: View {
                 model.breaks[i].enabled = include
                 model.breaks[i].schedule.duration = duration
                 model.breaks[i].schedule.frequency = frequency
+                model.breaks[i].schedule.dueBehavior = dueBehavior
                 Scheduler.shared.resetBreak(model.breaks[i].id)
             } else if include {
                 var b = make()
                 b.schedule.duration = duration
                 b.schedule.frequency = frequency
+                b.schedule.dueBehavior = dueBehavior
                 Scheduler.shared.reschedule(&b, from: Date(), reason: .reset)
                 model.breaks.append(b)
             }

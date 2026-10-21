@@ -137,7 +137,8 @@ private struct SchedulePage: View {
                 }
                 LabeledContent("Next due") {
                     HStack {
-                        Text(model.dateString(b.state.nextDue)).foregroundStyle(.secondary)
+                        Text(Scheduler.shared.waitingDescription(for: b, now: ticker.now) ?? model.dateString(b.state.nextDue))
+                            .foregroundStyle(.secondary)
                         if let due = b.state.nextDue, due != .distantFuture {
                             DatePicker(
                                 "",
@@ -222,9 +223,8 @@ private struct SchedulePage: View {
                     ForEach(DueBehavior.allCases) { Text($0.title).tag($0) }
                 }
                 switch b.schedule.dueBehavior {
-                case .startImmediately: Hint("The break begins right away, even if you're typing.")
-                case .waitForNaturalBreak:
-                    Hint("The break waits until you stop typing and mousing for 15 seconds, but no longer than a minute.")
+                case .startImmediately, .waitForNaturalBreak:
+                    Hint(b.schedule.dueBehavior.explanation)
                 case .ask:
                     LabeledContent("Start anyway after") {
                         IntervalField(interval: $b.schedule.askAutoStart, units: [.seconds, .minutes], minimum: 5)

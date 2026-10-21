@@ -277,7 +277,7 @@ final class Scheduler {
         case .startImmediately:
             startBreak(b.id, manual: false)
         case .waitForNaturalBreak:
-            if idle >= 15 || now.timeIntervalSince(since) >= 60 {
+            if idle >= Self.pauseLength || now.timeIntervalSince(since) >= Self.longestWait {
                 startBreak(b.id, manual: false)
             } else {
                 model.update(b.id) { $0.state.status = "waiting for a pause in your work" }
@@ -295,6 +295,23 @@ final class Scheduler {
                 }
             }
         }
+    }
+
+    /// "Wait for a pause in my work": start after this many seconds without input…
+    nonisolated static let pauseLength: TimeInterval = 15
+    /// …or after this long, whichever comes first.
+    nonisolated static let longestWait: TimeInterval = 60
+
+    /// What a due break is waiting for before it starts, or nil if it isn't waiting.
+    /// Shown in the menu bar and Settings so a late break doesn't look stuck.
+    func waitingDescription(for b: Break, now: Date = Date()) -> String? {
+        guard b.isActive, session?.breakItem.id != b.id, let due = b.state.nextDue, due <= now else { return nil }
+        if askingBreakID == b.id { return "waiting for your answer" }
+        if b.schedule.dueBehavior == .waitForNaturalBreak, let since = dueSince[b.id] {
+            let left = max(1, Self.longestWait - now.timeIntervalSince(since))
+            return "waiting for a pause in your work (starts within \(Format.brief(left)))"
+        }
+        return b.state.status
     }
 
     // MARK: - Commands
