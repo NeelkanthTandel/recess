@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden}body{display:flex;align-items:center;justify-content:center}
+canvas{width:min(60vh,60vw);height:min(60vh,60vw);margin-bottom:12vh}</style></head><body><canvas id="k" width="800" height="800"></canvas><script>
+const k=document.getElementById('k'),x=k.getContext('2d');
+function hand(a,l,w,c){x.save();x.rotate(a);x.beginPath();x.moveTo(0,40);x.lineTo(0,-l);x.lineWidth=w;x.lineCap='round';x.strokeStyle=c;x.stroke();x.restore()}
+function draw(){const d=new Date();x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,800,800);x.translate(400,400);
+x.beginPath();x.arc(0,0,380,0,7);x.fillStyle='rgba(255,255,255,.08)';x.fill();x.lineWidth=6;x.strokeStyle='rgba(255,255,255,.5)';x.stroke();
+for(let i=0;i<60;i++){x.save();x.rotate(i*Math.PI/30);x.beginPath();x.moveTo(0,-350);x.lineTo(0,i%5?-338:-310);x.lineWidth=i%5?3:8;x.strokeStyle='rgba(255,255,255,.8)';x.stroke();x.restore()}
+const s=d.getSeconds()+d.getMilliseconds()/1000,m=d.getMinutes()+s/60,h=d.getHours()%12+m/60;
+hand(h*Math.PI/6,200,18,'#fff');hand(m*Math.PI/30,300,12,'#fff');hand(s*Math.PI/30,330,4,'#ff9f43');
+x.beginPath();x.arc(0,0,14,0,7);x.fillStyle='#ff9f43';x.fill();requestAnimationFrame(draw)}
+draw();</script></body></html>

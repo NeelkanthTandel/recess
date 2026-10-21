@@ -1,0 +1,36 @@
+name: Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Settings → …
+        2. …
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: e.g. 15.3
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Recess version or commit
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots, settings or logs
+      description: If it's about scheduling, the break's settings help a lot. Please remove anything private.

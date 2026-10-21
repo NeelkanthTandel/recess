@@ -1,0 +1,8 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden;color:#fff;font-family:-apple-system,sans-serif}
+body{display:flex;align-items:center;justify-content:center;flex-direction:column}
+#t{font-size:22vw;font-weight:200;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:-14vh}#d{font-size:2.6vw;opacity:.7}</style></head>
+<body><div id="t"></div><div id="d"></div><script>
+function tick(){const n=new Date();document.getElementById('t').textContent=n.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+document.getElementById('d').textContent=n.toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'})}
+tick();setInterval(tick,1000);</script></body></html>

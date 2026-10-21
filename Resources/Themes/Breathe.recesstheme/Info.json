@@ -1,0 +1,11 @@
+{
+  "name": "Breathe",
+  "identifier": "recess.breathe",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "A slow breathing guide: breathe in as the circle grows, out as it shrinks.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}

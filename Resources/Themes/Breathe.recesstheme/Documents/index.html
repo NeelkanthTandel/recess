@@ -1,0 +1,14 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:-apple-system,sans-serif;color:#fff}
+body{display:flex;align-items:center;justify-content:center;flex-direction:column}
+#c{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#8fd3f4,#4a90c2);box-shadow:0 0 80px rgba(143,211,244,.45);transform:scale(.55);transition:transform 4s ease-in-out}
+#t{margin-top:70px;font-size:34px;font-weight:300;letter-spacing:2px;opacity:.9}
+#n{position:absolute;top:12vh;font-size:20px;letter-spacing:6px;text-transform:uppercase;opacity:.6}
+</style></head><body><div id="n"></div><div id="c"></div><div id="t">Breathe in</div><script>
+const c=document.getElementById('c'),t=document.getElementById('t');let inhale=true;
+function step(){if(inhale){c.style.transition='transform 4s ease-in-out';c.style.transform='scale(1.15)';t.textContent='Breathe in';setTimeout(()=>{inhale=false;step()},4000)}
+else{c.style.transition='transform 6s ease-in-out';c.style.transform='scale(.55)';t.textContent='Breathe out';setTimeout(()=>{inhale=true;step()},6000)}}
+function recessInfo(j){const o=JSON.parse(j);document.getElementById('n').textContent=o.breakName+' break'}
+try{window.webkit.messageHandlers.getRecessInfo.postMessage('summary')}catch(e){}
+setTimeout(step,300);
+</script></body></html>

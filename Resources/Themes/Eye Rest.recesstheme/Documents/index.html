@@ -1,0 +1,8 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden;color:#fff;font-family:-apple-system,sans-serif}
+body{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#e{font-size:120px;margin-top:-16vh}#s{font-size:44px;font-weight:500;max-width:70vw;margin-top:20px;transition:opacity .6s}#h{font-size:22px;opacity:.65;margin-top:14px;max-width:60vw}</style></head>
+<body><div id="e">👀</div><div id="s"></div><div id="h"></div><script>
+const steps=[["🏔","Look at something far away","At least 20 feet (6 m) away. Let your eyes relax."],["😌","Blink slowly ten times","Close your eyes fully each time."],["🔄","Roll your eyes","Slowly look up, right, down and left. Then reverse."],["👉","Near and far","Focus on your finger, then on something far away. Repeat."],["🙈","Palming","Rub your hands together and cup them over your closed eyes."]];
+let i=0;function show(){const s=steps[i%steps.length];const el=document.getElementById('s');el.style.opacity=0;setTimeout(()=>{document.getElementById('e').textContent=s[0];el.textContent=s[1];document.getElementById('h').textContent=s[2];el.style.opacity=1},500);i++}
+show();setInterval(show,12000);</script></body></html>

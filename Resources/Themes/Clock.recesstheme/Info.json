@@ -1,0 +1,11 @@
+{
+  "name": "Clock",
+  "identifier": "recess.clock",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "An analog clock with smoothly moving hands.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}

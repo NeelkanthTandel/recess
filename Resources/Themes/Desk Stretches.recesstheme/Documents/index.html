@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:transparent;overflow:hidden;color:#fff;font-family:-apple-system,sans-serif}
+body{display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#e{font-size:110px;margin-top:-16vh}#s{font-size:46px;font-weight:600;margin-top:16px}#h{font-size:24px;opacity:.75;margin-top:14px;max-width:62vw;line-height:1.4}
+#bar{width:320px;height:6px;border-radius:3px;background:rgba(255,255,255,.15);margin-top:28px;overflow:hidden}#fill{height:100%;width:0;background:#7bed9f}</style></head>
+<body><div id="e"></div><div id="s"></div><div id="h"></div><div id="bar"><div id="fill"></div></div><script>
+const s=[["🙆","Overhead reach","Interlace your fingers and push your palms up toward the ceiling. Hold and breathe."],["🤷","Shoulder rolls","Roll your shoulders backwards slowly, ten times, then forwards."],["🧘","Neck stretch","Tilt your ear toward your shoulder. Hold, then switch sides."],["🙌","Chest opener","Clasp your hands behind your back and gently lift, opening your chest."],["🔄","Seated twist","Sit tall and rotate your upper body to one side, hand on the chair back. Switch."],["✋","Wrist stretch","Arm out, palm up; gently pull your fingers back with the other hand. Switch."],["🦵","Leg extension","Straighten one leg and point, then flex your foot. Switch legs."],["🚶","Walk around","Stand up and take a short walk; get a glass of water."]];
+let i=Math.floor(Math.random()*s.length),dur=15000;
+function show(){const x=s[i++%s.length];document.getElementById('e').textContent=x[0];document.getElementById('s').textContent=x[1];document.getElementById('h').textContent=x[2];
+const f=document.getElementById('fill');f.style.transition='none';f.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='width '+dur+'ms linear';f.style.width='100%'}))}
+show();setInterval(show,dur);</script></body></html>

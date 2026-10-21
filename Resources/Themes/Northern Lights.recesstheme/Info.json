@@ -1,0 +1,11 @@
+{
+  "name": "Northern Lights",
+  "identifier": "recess.northern-lights",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "Slowly drifting colours to rest your eyes.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}

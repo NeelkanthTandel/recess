@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key><string>en</string>
+	<key>CFBundleDisplayName</key><string>Recess</string>
+	<key>CFBundleExecutable</key><string>Recess</string>
+	<key>CFBundleIconFile</key><string>AppIcon</string>
+	<key>CFBundleIdentifier</key><string>com.neel.recess</string>
+	<key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+	<key>CFBundleName</key><string>Recess</string>
+	<key>CFBundlePackageType</key><string>APPL</string>
+	<key>CFBundleShortVersionString</key><string>1.0</string>
+	<key>CFBundleVersion</key><string>1</string>
+	<key>LSApplicationCategoryType</key><string>public.app-category.healthcare-fitness</string>
+	<key>LSMinimumSystemVersion</key><string>14.0</string>
+	<key>LSUIElement</key><true/>
+	<key>NSHighResolutionCapable</key><true/>
+	<key>NSHumanReadableCopyright</key><string>Free and open source under the MIT License.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key><string>Recess can schedule breaks around calendar events and postpone breaks during meetings.</string>
+	<key>NSCalendarsUsageDescription</key><string>Recess can schedule breaks around calendar events and postpone breaks during meetings.</string>
+	<key>NSAppleEventsUsageDescription</key><string>Break action and rule scripts may control other apps, such as pausing Music.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key><string>Editor</string>
+			<key>CFBundleURLName</key><string>com.neel.recess</string>
+			<key>CFBundleURLSchemes</key><array><string>recess</string></array>
+		</dict>
+	</array>
+</dict>
+</plist>

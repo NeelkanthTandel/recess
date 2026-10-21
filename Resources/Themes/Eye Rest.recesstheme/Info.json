@@ -1,0 +1,11 @@
+{
+  "name": "Eye Rest",
+  "identifier": "recess.eye-rest",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "Guided 20-20-20 eye exercises: look far away, blink, roll and focus.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}

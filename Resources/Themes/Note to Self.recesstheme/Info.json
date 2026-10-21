@@ -1,0 +1,11 @@
+{
+  "name": "Note to Self",
+  "identifier": "recess.note-to-self",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "Text you can edit to say whatever you wish. Double-click and type; it's remembered for each break.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}

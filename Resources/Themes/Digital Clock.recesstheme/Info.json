@@ -1,0 +1,11 @@
+{
+  "name": "Digital Clock",
+  "identifier": "recess.digital-clock",
+  "version": 1,
+  "author": {
+    "name": "Recess"
+  },
+  "comments": "The current time in large digits.",
+  "rootDocument": "index.html",
+  "type": "html5"
+}
