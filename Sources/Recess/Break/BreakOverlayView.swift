@@ -151,21 +151,56 @@ struct OverlayButton: View {
     let title: String
     var prominent = false
     let action: () -> Void
+
+    var body: some View {
+        Button(title, action: action)
+            .buttonStyle(OverlayButtonStyle(prominent: prominent))
+            .focusEffectDisabled()
+    }
+}
+
+/// Draws the whole button itself, so no system button chrome shows around the capsule.
+private struct OverlayButtonStyle: ButtonStyle {
+    var prominent: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        OverlayButtonLabel(label: configuration.label, pressed: configuration.isPressed, prominent: prominent)
+    }
+}
+
+private struct OverlayButtonLabel<Label: View>: View {
+    let label: Label
+    let pressed: Bool
+    let prominent: Bool
     @State private var hover = false
 
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 15, weight: .medium))
-                .padding(.horizontal, 18)
-                .padding(.vertical, 10)
-                .background(
-                    Capsule().fill(prominent ? Color.accentColor : Color.white.opacity(hover ? 0.28 : 0.16))
-                )
-                .overlay(Capsule().stroke(.white.opacity(0.25), lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-        .onHover { hover = $0 }
+        label
+            .font(.system(size: 15, weight: .medium))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 10)
+            .background(Capsule().fill(fill))
+            .overlay(CapsuleRing().fill(.white.opacity(0.25), style: FillStyle(eoFill: true)))
+            .contentShape(Capsule())
+            .onHover { hover = $0 }
+    }
+
+    private var fill: Color {
+        if prominent { return Color.accentColor.opacity(pressed ? 0.8 : 1) }
+        return Color.white.opacity(pressed ? 0.34 : (hover ? 0.26 : 0.16))
+    }
+}
+
+/// A 1-point capsule outline drawn as a filled ring. Stroked capsules draw stray marks at
+/// their ends on some macOS versions; a fill doesn't.
+private struct CapsuleRing: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addRoundedRect(in: rect, cornerSize: CGSize(width: rect.height / 2, height: rect.height / 2))
+        let inner = rect.insetBy(dx: 1, dy: 1)
+        path.addRoundedRect(in: inner, cornerSize: CGSize(width: inner.height / 2, height: inner.height / 2))
+        return path
     }
 }
 

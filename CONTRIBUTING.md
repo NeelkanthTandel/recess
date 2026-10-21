@@ -46,6 +46,14 @@ With `RECESS_DATA_DIR` set, Recess reads and writes only that folder. Debug buil
 
 Themes are folders: `Name.recesstheme/Info.json` plus `Name.recesstheme/Documents/index.html`. Copy one from `Resources/Themes` to get started, and see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#themes) for how a theme can get the break name and time remaining. To contribute a theme, add it under `Resources/Themes`. It must be your own work, or carry a compatible licence that you name in the PR. It shouldn't load remote scripts.
 
+## The website
+
+The landing page lives in [`site/`](site/): plain HTML and CSS, one small script (`app.js`) for the break demos, and two self-hosted fonts (Instrument Serif and Atkinson Hyperlegible Next, each under the SIL Open Font License, with the licence texts beside them in `site/fonts/`). The sky and night backgrounds are drawn in SVG; their sources, and how to re-render them, are in [`docs/site-art/`](docs/site-art/). There's no build step: open `site/index.html` in a browser to preview it. Changes to `site/` are published to GitHub Pages when they're merged into `main`. Please keep it free of trackers, third-party scripts and requests to other sites.
+
+## Releases
+
+Maintainers cut releases by pushing a version tag; see [docs/RELEASING.md](docs/RELEASING.md).
+
 ## Reporting bugs and security issues
 
 Use the issue templates for bugs and feature requests. For security problems, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.

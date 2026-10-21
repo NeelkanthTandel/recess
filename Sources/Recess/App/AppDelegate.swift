@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import SwiftUI
 import UserNotifications
 
 @MainActor
@@ -226,6 +227,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                     try? line.write(
                         to: Store.subfolder("Snapshots").appendingPathComponent("notify-status.txt"), atomically: true, encoding: .utf8)
                 }
+            case "render":
+                // Test hook: draws a break screen in an off-screen window and saves it as a PNG,
+                // without showing anything or taking focus (used for README and site screenshots).
+                guard ProcessInfo.processInfo.environment["RECESS_DATA_DIR"] != nil, let b = target ?? model.breaks.first else { return }
+                let name = String((q["name"] ?? "render").filter { $0.isLetter || $0.isNumber || $0 == "-" }.prefix(40))
+                if let page = q["page"].flatMap(BreakPage.init(rawValue:)) {
+                    Self.renderEditor(b, page: page, name: name.isEmpty ? "render" : name)
+                } else {
+                    Self.renderBreakScreen(b, name: name.isEmpty ? "render" : name)
+                }
             case "snapshot":
                 // Test hook: writes PNGs of Recess's own visible windows (only with RECESS_DATA_DIR set).
                 guard ProcessInfo.processInfo.environment["RECESS_DATA_DIR"] != nil else { return }
@@ -244,6 +255,54 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             if let label = view.accessibilityLabel(), !label.isEmpty { out.append(label) }
             for s in view.subviews { out += texts(in: s) }
             return out
+        }
+
+        static func renderBreakScreen(_ b: Break, name: String) {
+            var item = b
+            item.controls.fadeInSeconds = 0
+            item.controls.disableButtonsSeconds = 0
+            let session = BreakSession(breakItem: item, isPreview: false, settings: AppModel.shared.settings) { _ in }
+            let frame = NSRect(x: -30000, y: -30000, width: 1440, height: 900)
+            let window = NSWindow(contentRect: frame, styleMask: .borderless, backing: .buffered, defer: false)
+            window.isReleasedWhenClosed = false
+            window.contentView = NSHostingView(rootView: BreakOverlayView(session: session, mode: .main))
+            window.orderFrontRegardless()
+            // Give HTML themes time to load and animate.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                if let view = window.contentView, let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
+                    view.cacheDisplay(in: view.bounds, to: rep)
+                    let file = Store.subfolder("Snapshots").appendingPathComponent("\(name).png")
+                    try? rep.representation(using: .png, properties: [:])?.write(to: file)
+                }
+                window.orderOut(nil)
+                _ = session
+            }
+        }
+
+        /// Renders one page of a break's settings (without the sidebar) off-screen.
+        static func renderEditor(_ b: Break, page: BreakPage, name: String) {
+            UserDefaults.standard.set(page.rawValue, forKey: "breakPage")
+            let root = BreakEditorView(breakID: b.id)
+                .environmentObject(AppModel.shared)
+                .environmentObject(ThemeManager.shared)
+                .environmentObject(CalendarManager.shared)
+                .frame(width: 760, height: 640)
+            let window = NSWindow(
+                contentRect: NSRect(x: -30000, y: -30000, width: 760, height: 640), styleMask: .borderless, backing: .buffered, defer: false
+            )
+            window.isReleasedWhenClosed = false
+            window.appearance = NSAppearance(named: .darkAqua)
+            window.backgroundColor = .windowBackgroundColor
+            window.contentView = NSHostingView(rootView: root)
+            window.orderFrontRegardless()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if let view = window.contentView, let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
+                    view.cacheDisplay(in: view.bounds, to: rep)
+                    try? rep.representation(using: .png, properties: [:])?.write(
+                        to: Store.subfolder("Snapshots").appendingPathComponent("\(name).png"))
+                }
+                window.orderOut(nil)
+            }
         }
 
         static func snapshotWindows(name: String) {

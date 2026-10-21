@@ -1,0 +1,49 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}svg{display:block}</style></head><body>
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d6bb8"/>
+      <stop offset="0.38" stop-color="#7ea5de"/>
+      <stop offset="0.64" stop-color="#bdd3ef"/>
+      <stop offset="0.84" stop-color="#f0d6c6"/>
+      <stop offset="1" stop-color="#f8e2cd"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="1.02" r="0.62">
+      <stop offset="0" stop-color="#ffe3b3" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffd4a2" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd4a2" stop-opacity="0"/>
+    </radialGradient>
+    <!-- High, thin streaks of cloud -->
+    <filter id="wisps" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0016 0.011" numOctaves="6" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  3.2 0 0 0 -1.65"/>
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+    <!-- A soft bank of cumulus near the horizon -->
+    <filter id="bank" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0032 0.0062" numOctaves="7" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 0.98  0 0 0 0 0.96  5.2 0 0 0 -2.4" result="c"/>
+      <feGaussianBlur in="c" stdDeviation="0.8" result="soft"/>
+      <!-- light from below-left: a faint warm shade on the underside -->
+      <feOffset in="soft" dx="0" dy="11" result="shade"/>
+      <feColorMatrix in="shade" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.84  0 0 0 0 0.74  0 0 0 0.62 0" result="tint"/>
+      <feMerge><feMergeNode in="tint"/><feMergeNode in="soft"/></feMerge>
+    </filter>
+    <linearGradient id="bankMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.38" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.7" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="mb"><rect width="1600" height="1000" fill="url(#bankMask)"/></mask>
+    <linearGradient id="wispMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.75"/>
+      <stop offset="0.55" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="0.8" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="mw"><rect width="1600" height="1000" fill="url(#wispMask)"/></mask>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <rect width="1600" height="1000" filter="url(#wisps)" mask="url(#mw)" opacity="0.7"/>
+  <rect width="1600" height="1000" filter="url(#bank)" mask="url(#mb)"/>
+</svg></body></html>
