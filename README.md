@@ -4,7 +4,7 @@
 
 **A free, open-source break reminder for macOS.** Recess dims your screen when it's time to rest your eyes, stretch or get up. You can postpone or skip when you're in the middle of something, and it notices when you've already stepped away.
 
-**[Download Recess.dmg](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg)** · [Website](https://neelkanthtandel.github.io/recess/) · macOS 14+, Apple Silicon and Intel
+**[Download Recess.dmg](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg)** · [Website](https://recess.always17.com/) · macOS 14+, Apple Silicon and Intel
 
 [![CI](https://github.com/NeelkanthTandel/recess/actions/workflows/ci.yml/badge.svg)](https://github.com/NeelkanthTandel/recess/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
