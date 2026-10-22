@@ -4,9 +4,12 @@ import AppKit
 // rising over the horizon inside it. Everything is drawn here, so no third-party artwork
 // (including SF Symbols, which may not be used in app icons) ends up in the icon.
 //
-// Usage: swift scripts/make_icon.swift out.png
+// Usage: swift scripts/make_icon.swift out.png [--windows]
+//
+// --windows drops Apple's margin and fills the canvas, since Windows draws icons edge to edge.
 
 let out = CommandLine.arguments[1]
+let windows = CommandLine.arguments.contains("--windows")
 let size: CGFloat = 1024
 
 func color(_ hex: UInt32, _ alpha: CGFloat = 1) -> NSColor {
@@ -16,6 +19,15 @@ func color(_ hex: UInt32, _ alpha: CGFloat = 1) -> NSColor {
 }
 
 let image = NSImage(size: NSSize(width: size, height: size), flipped: false) { _ in
+    if windows {
+        // Scale the 824 pt tile up to a 984 pt one, leaving a 20 pt margin for the edge.
+        let scale: CGFloat = 984 / 824
+        let transform = NSAffineTransform()
+        transform.translateX(by: 512, yBy: 512)
+        transform.scale(by: scale)
+        transform.translateX(by: -512, yBy: -512)
+        transform.concat()
+    }
     // Tile: Apple's icon grid leaves a 100 pt margin around an 824 pt rounded square.
     let tile = NSRect(x: 100, y: 100, width: 824, height: 824)
     let tilePath = NSBezierPath(roundedRect: tile, xRadius: 186, yRadius: 186)

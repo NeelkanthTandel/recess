@@ -1,0 +1,21 @@
+<Project>
+  <!-- Shared by every project under windows/. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
+    <!-- Needed for the unused-usings check (IDE0005) to run during builds; comments stay optional. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+    <!-- Lets the Windows app compile on macOS and Linux too (it only runs on Windows). -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Releases pass the tag's version with -p:Version=1.2.3. -->
+    <Version>0.0.0</Version>
+    <Product>Recess</Product>
+    <Company>Recess contributors</Company>
+    <Copyright>Copyright © Recess contributors. MIT License.</Copyright>
+  </PropertyGroup>
+</Project>

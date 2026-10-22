@@ -8,3 +8,14 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+  - package-ecosystem: nuget
+    directory: /windows
+    schedule:
+      interval: weekly
+    groups:
+      nuget:
+        patterns: ["*"]
+  - package-ecosystem: dotnet-sdk
+    directory: /windows
+    schedule:
+      interval: weekly
