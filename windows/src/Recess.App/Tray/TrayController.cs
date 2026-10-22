@@ -12,19 +12,6 @@ namespace Recess.App.Tray;
 /// <summary>The notification-area icon and its menu: Recess's counterpart to the Mac menu bar item.</summary>
 internal sealed class TrayController : IDisposable
 {
-    private static readonly (string Title, int Seconds)[] MakeDueChoices =
-    [
-        ("30 seconds", 30), ("1 minute", 60), ("2 minutes", 120), ("3 minutes", 180), ("4 minutes", 240), ("5 minutes", 300),
-        ("10 minutes", 600), ("15 minutes", 900), ("20 minutes", 1200), ("30 minutes", 1800), ("45 minutes", 2700), ("1 hour", 3600),
-    ];
-
-    private static readonly (string Title, int Seconds)[] PauseChoices =
-    [
-        ("1 minute", 60), ("2 minutes", 120), ("5 minutes", 300), ("10 minutes", 600), ("15 minutes", 900), ("30 minutes", 1800),
-        ("1 hour", 3600), ("2 hours", 7200), ("3 hours", 10800), ("4 hours", 14400), ("5 hours", 18000), ("8 hours", 28800),
-        ("12 hours", 43200), ("24 hours", 86400), ("Until I resume", 0),
-    ];
-
     private readonly RecessModel model;
     private readonly Scheduler scheduler;
     private readonly IClock clock;
@@ -236,7 +223,7 @@ internal sealed class TrayController : IDisposable
         if (!s.HideMakeDue || extended)
         {
             var due = new MenuItem { Header = "Make due in" };
-            foreach (var (title, seconds) in MakeDueChoices)
+            foreach (var (title, seconds) in Settings.Choices.MakeDue)
             {
                 due.Items.Add(Item(title, () => scheduler.MakeDue(b.Id, seconds)));
             }
@@ -267,7 +254,7 @@ internal sealed class TrayController : IDisposable
 
     private void AddPauseChoices(MenuItem parent, Guid? id)
     {
-        foreach (var (title, seconds) in PauseChoices)
+        foreach (var (title, seconds) in Settings.Choices.Pause)
         {
             if (seconds == 0)
             {
