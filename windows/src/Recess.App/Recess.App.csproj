@@ -10,6 +10,10 @@
     <RootNamespace>Recess.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\Recess.ico</ApplicationIcon>
+    <!-- Recess's own text is English, so WPF's translated resources aren't shipped. -->
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <PublishDocumentationFile>false</PublishDocumentationFile>
+    <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
     <!-- WPF's Fluent theme (ThemeMode) is still marked experimental. -->
     <NoWarn>$(NoWarn);WPF0001</NoWarn>
   </PropertyGroup>

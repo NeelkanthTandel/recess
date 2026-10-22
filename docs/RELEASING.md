@@ -1,6 +1,6 @@
 # Releasing
 
-Releases are built by GitHub Actions ([`.github/workflows/release.yml`](../.github/workflows/release.yml)) when a version tag is pushed. Only maintainers can push `v*` tags; a repository ruleset protects them.
+Releases are built by GitHub Actions ([`.github/workflows/release.yml`](../.github/workflows/release.yml)) when a version tag is pushed. Only maintainers can push `v*` tags; a repository ruleset protects them. One release carries both the Mac and the Windows app.
 
 ## Cutting a release
 
@@ -13,21 +13,37 @@ Releases are built by GitHub Actions ([`.github/workflows/release.yml`](../.gith
    git push origin v1.2.0
    ```
 
-3. The **Release** workflow runs the tests, then:
-   - builds a universal (Apple Silicon + Intel) `Recess.app` with version `1.2.0`;
-   - packs it into `Recess.dmg`, with a shortcut to Applications;
-   - creates the GitHub Release, uploads `Recess.dmg` and `Recess.dmg.sha256`, and writes release notes with the changes since the last tag.
+3. The **Release** workflow checks the tag, then builds both apps at the same time:
+   - **Mac:** runs the tests, builds a universal (Apple Silicon + Intel) `Recess.app` with version `1.2.0`, and packs it into `Recess.dmg` with a shortcut to Applications.
+   - **Windows:** runs the tests, publishes a self-contained x64 build with version `1.2.0` (no .NET install needed; it also runs on Windows on Arm), and packs it two ways: `Recess-Setup.exe`, a per-user installer made with Inno Setup ([`windows/installer/Recess.iss`](../windows/installer/Recess.iss)), and `Recess-windows.zip`, a portable copy.
+4. Once both have built, a last job writes a `.sha256` file for each download and creates the GitHub Release with everything at once, so a release is never half there. The notes explain the first-launch prompts and list the checksums, followed by the changes since the last tag.
 
-The download link `https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg`, used by the README and the website, always points at the newest release, so nothing else needs updating.
+These links always point at the newest release, so nothing else needs updating:
 
-To try the packaging locally:
+- `https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg`
+- `https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe`
+- `https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-windows.zip`
+
+To try the packaging locally, on a Mac:
 
 ```bash
 VERSION=1.2.0 scripts/build_app.sh --universal
 scripts/make_dmg.sh            # → build/Recess.dmg
 ```
 
+and on Windows, with the [.NET 10 SDK](https://dotnet.microsoft.com/download) and [Inno Setup 6](https://jrsoftware.org/isinfo.php):
+
+```powershell
+cd windows
+dotnet publish src/Recess.App/Recess.App.csproj -c Release -r win-x64 --self-contained -p:Version=1.2.0 -p:DebugType=none -o publish/Recess
+& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.2.0 installer/Recess.iss   # → publish/Recess-Setup.exe
+```
+
+Every pull request's CI also builds the Windows zip and installer, as the **Recess-windows** artifact.
+
 ## Signing and notarization (optional)
+
+### Mac
 
 Without signing secrets, releases are signed ad hoc and people see a one-time Gatekeeper prompt; the release notes and website explain how to open the app. To remove the prompt, join the Apple Developer Program and add these **repository secrets** (Settings › Secrets and variables › Actions). The workflow then signs with your Developer ID, notarizes and staples the DMG automatically.
 
@@ -39,6 +55,15 @@ Without signing secrets, releases are signed ad hoc and people see a one-time Ga
 | `APPLE_TEAM_ID` | Your 10-character Team ID (developer.apple.com › Membership) |
 | `APPLE_APP_PASSWORD` | An app-specific password for that Apple ID (appleid.apple.com › Sign-In and Security) |
 
-Signing runs only in the release job, which only runs for tags you push. Pull requests, including ones from forks, never see these secrets.
+Once releases are notarized, remove the Mac "First launch" sections from `README.md` and `site/index.html`.
 
-Once releases are notarized, remove the "First launch" sections from `README.md` and `site/index.html`.
+### Windows
+
+The Windows downloads aren't signed yet, so Windows SmartScreen shows **Windows protected your PC** the first time (More info → Run anyway), and on a new PC with Smart App Control turned on, Windows won't run them at all. Signing fixes both. Two routes suit an open-source project:
+
+- **[SignPath Foundation](https://signpath.org/)** signs open-source projects for free. Apply with the repository; once accepted, add their GitHub action to the `windows` job.
+- **[Azure Trusted Signing](https://learn.microsoft.com/azure/trusted-signing/)** is a low-cost Microsoft service, open to individuals in some countries. Add `azure/trusted-signing-action` to the `windows` job, with the account details as secrets.
+
+Either way, sign twice in the `windows` job: `publish/Recess/Recess.exe` after **Publish** (so the installed app is signed too), and `publish/Recess-Setup.exe` after **Build installer**. The zip is made after the first signing. The checksums are computed afterwards, in the publish job, so they match the signed files. Once Windows releases are signed, remove the SmartScreen notes from `README.md`, `site/index.html` and the release notes in `release.yml`.
+
+Signing runs only in the release jobs, which only run for tags you push. Pull requests, including ones from forks, never see these secrets.

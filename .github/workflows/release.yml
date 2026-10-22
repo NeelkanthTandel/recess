@@ -1,11 +1,17 @@
-# Builds a universal Recess.app, packs it into Recess.dmg and publishes a GitHub Release.
+# Builds Recess for Mac and Windows and publishes a GitHub Release with both.
 #
 # Triggered by pushing a version tag (v1.2.3). Tags matching v* are protected by a repository
 # ruleset, so only maintainers can start a release.
 #
-# Signing is optional. Without secrets the app is signed ad hoc and users see a one-time
-# Gatekeeper prompt. Add the secrets listed in docs/RELEASING.md and the same workflow signs
-# with your Developer ID, notarizes and staples the DMG.
+#   version  -> checks the tag
+#   macos    -> universal Recess.app in Recess.dmg
+#   windows  -> Recess-Setup.exe (installer) and Recess-windows.zip (portable)
+#   publish  -> checksums, release notes, and the release itself, with every file at once
+#
+# Signing is optional. Without secrets the Mac app is signed ad hoc and the Windows files are
+# unsigned, so users see a one-time Gatekeeper or SmartScreen prompt. docs/RELEASING.md lists
+# the Mac secrets that turn on Developer ID signing and notarization, and how to add Windows
+# code signing.
 name: Release
 
 on:
@@ -20,12 +26,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - name: Read version from tag
+        id: read
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$'; then
+            echo "::error::Tag $GITHUB_REF_NAME isn't a version like v1.2.3"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+  macos:
+    needs: version
     runs-on: macos-15
     timeout-minutes: 45
-    permissions:
-      contents: write # create the GitHub Release and upload the DMG
+    outputs:
+      signed: ${{ steps.signed.outputs.signed }}
     env:
+      VERSION: ${{ needs.version.outputs.version }}
       MACOS_CERTIFICATE_P12: ${{ secrets.MACOS_CERTIFICATE_P12 }}
       MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -36,15 +60,6 @@ jobs:
 
       - name: Select Xcode
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_16*.app | sort -V | tail -1)"
-
-      - name: Read version from tag
-        run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$'; then
-            echo "::error::Tag $GITHUB_REF_NAME isn't a version like v1.2.3"
-            exit 1
-          fi
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: Test
         run: swift test
@@ -81,17 +96,101 @@ jobs:
           xcrun stapler staple build/Recess.dmg
           spctl --assess --type open --context context:primary-signature -v build/Recess.dmg
 
-      - name: Checksum
-        run: cd build && shasum -a 256 Recess.dmg > Recess.dmg.sha256 && cat Recess.dmg.sha256
+      - name: Note whether it's signed
+        id: signed
+        run: echo "signed=$([ -n "$SIGN_IDENTITY" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload disk image
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mac
+          path: build/Recess.dmg
+          retention-days: 3
+
+      - name: Remove signing keychain
+        if: always() && env.MACOS_CERTIFICATE_P12 != ''
+        run: security delete-keychain "$RUNNER_TEMP/signing.keychain-db" || true
+
+  windows:
+    needs: version
+    runs-on: windows-2025
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: windows
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: windows/global.json
+
+      - name: Test
+        run: dotnet test --solution Recess.slnx -c Release
+
+      - name: Publish
+        run: >
+          dotnet publish src/Recess.App/Recess.App.csproj -c Release -r win-x64 --self-contained
+          -p:Version=$env:VERSION -p:DebugType=none -o publish/Recess
+
+      - name: Portable zip
+        run: Compress-Archive -Path publish/Recess -DestinationPath publish/Recess-windows.zip
+
+      - name: Install Inno Setup
+        run: choco install innosetup --version 6.7.1 --no-progress -y
+
+      - name: Build installer
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /Qp "/DAppVersion=$env:VERSION" installer/Recess.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload Windows files
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: windows
+          path: |
+            windows/publish/Recess-Setup.exe
+            windows/publish/Recess-windows.zip
+          retention-days: 3
+
+  publish:
+    needs: [version, macos, windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # create the GitHub Release and upload its files
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      MAC_SIGNED: ${{ needs.macos.outputs.signed }}
+    steps:
+      - name: Download build output
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Checksums
+        working-directory: dist
+        run: |
+          for f in Recess.dmg Recess-Setup.exe Recess-windows.zip; do
+            sha256sum "$f" > "$f.sha256"
+            cat "$f.sha256"
+          done
 
       - name: Write release notes
+        working-directory: dist
         run: |
+          sum() { cut -d' ' -f1 "$1.sha256"; }
           {
-            echo "Download **Recess.dmg** below, open it and drag Recess to Applications. Requires macOS 14 or later (Apple Silicon or Intel)."
+            echo "## Mac"
             echo
-            if [ -z "$SIGN_IDENTITY" ]; then
-              echo "### First launch"
-              echo
+            echo "Download **Recess.dmg**, open it and drag Recess to Applications. Requires macOS 14 or later (Apple Silicon or Intel)."
+            echo
+            if [ "$MAC_SIGNED" != "yes" ]; then
               echo "This build isn't notarized by Apple yet, so macOS blocks it the first time:"
               echo
               echo "1. Open Recess. When macOS says it can't verify the app, click **Done**."
@@ -101,16 +200,24 @@ jobs:
               echo "You only need to do this once. Prefer the Terminal? \`xattr -dr com.apple.quarantine /Applications/Recess.app\`"
               echo
             fi
-            echo "SHA-256: \`$(cut -d' ' -f1 build/Recess.dmg.sha256)\`"
+            echo "## Windows"
+            echo
+            echo "Download **Recess-Setup.exe** and run it; it installs for your account only, without admin rights. Requires Windows 10 (version 2004) or Windows 11, 64-bit; it also runs on Windows on Arm. Prefer not to install? **Recess-windows.zip** is a portable copy: unzip it anywhere and run \`Recess.exe\`."
+            echo
+            echo "This build isn't signed yet, so Windows may stop it the first time: on **Windows protected your PC**, click **More info**, then **Run anyway**. On a new PC with Smart App Control turned on, Windows won't run unsigned apps at all."
+            echo
+            echo "## Checksums (SHA-256)"
+            echo
+            echo "- Recess.dmg: \`$(sum Recess.dmg)\`"
+            echo "- Recess-Setup.exe: \`$(sum Recess-Setup.exe)\`"
+            echo "- Recess-windows.zip: \`$(sum Recess-windows.zip)\`"
           } > "$RUNNER_TEMP/notes.md"
 
       - name: Publish release
+        working-directory: dist
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" build/Recess.dmg build/Recess.dmg.sha256 \
-            --verify-tag --title "Recess $VERSION" --notes-file "$RUNNER_TEMP/notes.md" --generate-notes
-
-      - name: Remove signing keychain
-        if: always() && env.MACOS_CERTIFICATE_P12 != ''
-        run: security delete-keychain "$RUNNER_TEMP/signing.keychain-db" || true
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "Recess $VERSION" --notes-file "$RUNNER_TEMP/notes.md" --generate-notes \
+            Recess.dmg Recess.dmg.sha256 Recess-Setup.exe Recess-Setup.exe.sha256 Recess-windows.zip Recess-windows.zip.sha256
