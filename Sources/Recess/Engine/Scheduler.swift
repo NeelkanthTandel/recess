@@ -340,6 +340,7 @@ final class Scheduler {
 
     private func sessionEnded(id: UUID, result: BreakSession.Result, preview: Bool) {
         session = nil
+        ActionPerformer.shared.stopLoopingSounds()
         model.activeBreakID = nil
         lastCycle = Date()
         lastSessionEnd = Date()

@@ -164,6 +164,12 @@ final class ActionPerformer: NSObject {
         }
     }
 
+    /// "Loop until the break ends": stops looping sounds once a break is over.
+    func stopLoopingSounds() {
+        for s in sounds where s.loops { s.stop() }
+        sounds.removeAll { !$0.isPlaying }
+    }
+
     func stopAllSound() {
         sounds.forEach { $0.stop() }
         sounds.removeAll()
