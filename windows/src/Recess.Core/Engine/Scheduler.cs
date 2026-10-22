@@ -835,6 +835,9 @@ public sealed class Scheduler
         }
     }
 
+    /// <summary>Calendar events changed (a feed was downloaded or edited): re-time calendar breaks on the next cycle.</summary>
+    public void CalendarsChanged() => lastCalendarRefresh = LocalTime.DistantPast;
+
     /// <summary>Picks up new or moved calendar events every couple of minutes.</summary>
     private void RefreshCalendarBreaks(DateTime now)
     {
