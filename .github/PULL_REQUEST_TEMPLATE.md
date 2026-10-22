@@ -8,6 +8,7 @@
 
 ## Checklist
 
-- [ ] `make lint` and `make test` pass
-- [ ] Builds without warnings (`make app`)
+- [ ] Mac: `make lint` and `make test` pass, and it builds without warnings (`make app`)
+- [ ] Windows: `dotnet format --verify-no-changes`, `dotnet build` and `dotnet test` pass in `windows/`
+- [ ] A change to how breaks behave is made in both apps (or there's an issue for the other)
 - [ ] UI text is my own wording; nothing copied from proprietary apps
