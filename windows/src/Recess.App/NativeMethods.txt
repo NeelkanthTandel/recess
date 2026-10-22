@@ -49,3 +49,13 @@ RegisterHotKey
 UnregisterHotKey
 WM_HOTKEY
 HOT_KEY_MODIFIERS
+SetWindowsHookEx
+UnhookWindowsHookEx
+CallNextHookEx
+GetMessage
+PostThreadMessage
+GetModuleHandle
+KBDLLHOOKSTRUCT
+WM_QUIT
+WM_KEYDOWN
+WM_SYSKEYDOWN
