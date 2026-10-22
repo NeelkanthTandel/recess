@@ -1,125 +1,143 @@
-using System.Text.Json;
 using System.Windows;
-using System.Windows.Controls;
-using Recess.App.Break;
+using System.Windows.Threading;
+using Recess.App.Actions;
+using Recess.App.Breaks;
 using Recess.App.Platform;
+using Recess.App.Settings;
+using Recess.App.Tray;
 using Recess.Core;
-using Windows.Win32;
 
 namespace Recess.App;
 
-public partial class App : Application
+public partial class App : Application, IUrlCommandHost
 {
-    private TrayIcon? tray;
+    private SingleInstance? instance;
+    private SystemMonitor? system;
+    private RecessModel? model;
+    private Scheduler? scheduler;
+    private ActivityRecorder? activity;
+    private ActionRunner? actions;
+    private TrayController? tray;
+    private DispatcherTimer? timer;
+    private readonly IClock clock = new SystemClock();
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // A recess:// link wins over anything else on the command line, which is then ignored.
+        var link = e.Args.FirstOrDefault(a => a.StartsWith("recess:", StringComparison.OrdinalIgnoreCase));
+
+        instance = SingleInstance.TryClaim();
+        if (instance is null)
+        {
+            // Recess is already running: hand it the link (or ask it to show Settings) and leave.
+            SingleInstance.Send(link is not null ? "url " + link : SingleInstance.Reopen);
+            Shutdown();
+            return;
+        }
+
         try
         {
             Toasts.Register();
         }
-        catch (Exception ex) when (ex is UnauthorizedAccessException or System.IO.IOException)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
         {
-            // Notifications fall back to Recess's own banner later on; nothing else depends on this.
+            // Notifications fall back to Recess's own banner.
+        }
+        try
+        {
+            Registration.EnsureProtocol();
+            Registration.RepairLaunchAtLogin();
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or System.Security.SecurityException)
+        {
+            // Links and starting at sign-in just won't work; nothing else depends on them.
         }
 
-        tray = new TrayIcon("Recess");
-        tray.MenuOpening += BuildMenu;
-        tray.Show(Icons.LoadAppIcon(PInvoke.GetDpiForSystem()));
+        var store = new Store(DataFolder.Path);
+        model = RecessModel.Load(store);
+        system = new SystemMonitor();
+        activity = new ActivityRecorder(store.ActivityFolder, () => model.Settings, clock);
+        actions = new ActionRunner(clock);
+        var themes = new ThemeCatalog(store.ThemesFolder);
+        var presenter = new BreakPresenter(clock, themes);
+        scheduler = new Scheduler(model, clock, system, new AskPanel(clock), presenter, actions, new NoCalendar(), new NoScripts(), activity,
+            () => Processes.Front() is { } f ? (f.Id, f.Name) : null);
+
+        var commands = new AppCommands
+        {
+            OpenSettings = OpenSettings,
+            Quit = Shutdown,
+            StopSound = actions.StopAllSound,
+            IsSoundPlaying = () => actions.IsSoundPlaying,
+        };
+        tray = new TrayController(model, scheduler, clock, commands);
+        tray.SetVisible(model.Settings.ShowStatusMenu);
+
+        scheduler.Start();
+        timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        timer.Tick += (_, _) => Cycle();
+        timer.Start();
+
+        instance.Listen(message => Dispatcher.BeginInvoke(() => Received(message)));
+        if (link is not null)
+        {
+            RunLink(link);
+        }
+        else if (!model.Settings.ShowStatusMenu)
+        {
+            // Without a tray icon, opening Recess is the way to reach Settings.
+            OpenSettings(null, null);
+        }
     }
+
+    private void Cycle()
+    {
+        scheduler!.Cycle();
+        model!.SaveIfChanged();
+        tray!.Refresh();
+    }
+
+    private void Received(string message)
+    {
+        if (message.StartsWith("url ", StringComparison.Ordinal))
+        {
+            RunLink(message[4..]);
+        }
+        else if (message == SingleInstance.Reopen)
+        {
+            OpenSettings(null, null);
+        }
+    }
+
+    private void RunLink(string link)
+    {
+        if (UrlCommand.Parse(link) is { } command)
+        {
+            UrlCommands.Run(command, model!, scheduler!, this, clock.UtcNow);
+            tray?.Refresh();
+        }
+    }
+
+    public void StopSound() => actions?.StopAllSound();
+
+    public void OpenSettings(string? page, Guid? breakId) => SettingsWindow.Open(model!, scheduler!, clock);
 
     protected override void OnExit(ExitEventArgs e)
     {
+        timer?.Stop();
+        model?.SaveNow();
+        activity?.Save();
         tray?.Dispose();
+        system?.Dispose();
+        instance?.Dispose();
         base.OnExit(e);
     }
 
-    // Milestone 1 menu: the checks to run on a real Windows PC before the engine goes in.
-    private void BuildMenu(ContextMenu menu, bool extended)
+    /// <summary>Script rules arrive with the next milestone.</summary>
+    private sealed class NoScripts : IScriptConditions
     {
-        menu.Items.Add(Item("Preview the Default break screen", () => PreviewSession.Start(null)));
-
-        var themes = new MenuItem { Header = "Preview an HTML theme" };
-        foreach (var (name, folder, root) in BundledThemes())
-        {
-            themes.Items.Add(Item(name, () => PreviewSession.Start(HtmlTheme.Local(folder, root))));
-        }
-        menu.Items.Add(themes);
-        menu.Items.Add(Item("Preview a YouTube theme", () => PreviewSession.Start(YouTubeTheme())));
-        menu.Items.Add(Item("Focus test: preview in 5 seconds", () =>
-        {
-            var timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
-            timer.Tick += (_, _) =>
-            {
-                timer.Stop();
-                PreviewSession.Start(null);
-            };
-            timer.Start();
-        }));
-        menu.Items.Add(new Separator());
-        menu.Items.Add(Item("Send a test notification", () =>
-        {
-            if (Toasts.Enabled)
-            {
-                Toasts.Show("Break coming up", "Your Normal break starts in a minute.");
-            }
-            else
-            {
-                MessageBox.Show("Notifications are turned off for Recess in Windows Settings.", "Recess");
-            }
-        }));
-        if (extended)
-        {
-            menu.Items.Add(Item("Open data folder", () => System.Diagnostics.Process.Start("explorer.exe", DataFolder.Path)));
-        }
-        menu.Items.Add(new Separator());
-        menu.Items.Add(Item("Quit Recess", Shutdown));
-    }
-
-    private static MenuItem Item(string header, Action action)
-    {
-        var item = new MenuItem { Header = header };
-        item.Click += (_, _) => action();
-        return item;
-    }
-
-    // Themes shipped next to the exe, each with an Info.json naming its root document.
-    private static IEnumerable<(string Name, string Folder, string Root)> BundledThemes()
-    {
-        var themes = Path.Combine(AppContext.BaseDirectory, "Themes");
-        if (!Directory.Exists(themes))
-        {
-            yield break;
-        }
-        foreach (var folder in Directory.GetDirectories(themes).Order())
-        {
-            var infoPath = Path.Combine(folder, "Info.json");
-            if (!File.Exists(infoPath))
-            {
-                continue;
-            }
-            using var info = JsonDocument.Parse(File.ReadAllText(infoPath));
-            var name = info.RootElement.TryGetProperty("name", out var n) ? n.GetString() : null;
-            var root = info.RootElement.TryGetProperty("rootDocument", out var r) ? r.GetString() : null;
-            if (name is not null && root is not null)
-            {
-                yield return (name, Path.Combine(folder, "Documents"), root);
-            }
-        }
-    }
-
-    // A generated theme like the Mac's YouTube themes, for checking that video plays smoothly.
-    private static HtmlTheme YouTubeTheme()
-    {
-        const string id = "jfKfPfyJRdk";
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Recess", "Spike", "YouTube");
-        Directory.CreateDirectory(folder);
-        File.WriteAllText(Path.Combine(folder, "index.html"), $$"""
-            <!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden}
-            iframe{position:absolute;inset:8vh 8vw;width:84vw;height:84vh;border:0;border-radius:16px}</style></head>
-            <body><iframe src="https://www.youtube-nocookie.com/embed/{{id}}?autoplay=1&loop=1&playlist={{id}}&mute=0" allow="autoplay; encrypted-media" allowfullscreen></iframe></body></html>
-            """);
-        return HtmlTheme.Local(folder, "index.html");
+        public bool Result(string scriptFilename) => false;
     }
 }

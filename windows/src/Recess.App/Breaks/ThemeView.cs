@@ -4,7 +4,7 @@ using System.Text.Json;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 
-namespace Recess.App.Break;
+namespace Recess.App.Breaks;
 
 /// <summary>What an HTML theme shows: a local theme folder, or a web page.</summary>
 internal sealed record HtmlTheme(string? Folder, string? RootDocument, Uri? Website)
