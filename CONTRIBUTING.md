@@ -4,6 +4,10 @@ Thanks for helping! Bug reports, ideas, themes and code are all welcome.
 
 ## Getting started
 
+Recess is two native apps in one repository: the **Mac app** (Swift, AppKit and SwiftUI) at the top level, and the **Windows app** (C# and WPF on .NET 10) in [`windows/`](windows/). They share the break themes, the website, and the same behaviour: the Windows engine is a port of the Mac one, test for test. A change to how breaks behave should land in both, or come with an issue for the other.
+
+### Mac
+
 Requirements: macOS 14 or later, and Xcode 16 or later (or the matching Swift toolchain).
 
 ```bash
@@ -17,7 +21,7 @@ make install   # copy to ~/Applications and launch
 
 You can also open `Package.swift` in Xcode and run the `Recess` scheme.
 
-### Try changes without touching your real data
+To try changes without touching your real data:
 
 ```bash
 make run-dev   # launches a debug build with RECESS_DATA_DIR=./.devdata
@@ -25,26 +29,42 @@ make run-dev   # launches a debug build with RECESS_DATA_DIR=./.devdata
 
 With `RECESS_DATA_DIR` set, Recess reads and writes only that folder. Debug builds also accept `recess://snapshot` and `recess://testnotify` (see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#testing-hooks)), which are handy for checking UI from scripts.
 
+### Windows
+
+Requirements: the [.NET 10 SDK](https://dotnet.microsoft.com/download). The app runs on Windows 10 (2004) or 11; Visual Studio 2022, Rider and VS Code (with C# Dev Kit) all open `windows/Recess.slnx`.
+
+```powershell
+cd windows
+dotnet build Recess.slnx
+dotnet test --solution Recess.slnx
+dotnet run --project src/Recess.App
+```
+
+The engine (`windows/src/Recess.Core`) has no Windows APIs, so its tests also run on macOS and Linux, and the whole solution compiles there too; only running the app needs Windows. Set `RECESS_DATA_DIR` to keep a debug build away from your real data. More in [windows/README.md](windows/README.md).
+
 ## Before you open a pull request
 
-- `make lint` passes (it runs `swift format lint` with the repo's `.swift-format` config). `make format` fixes most issues.
-- `make test` passes, and new logic in `Model/` or `Engine/` has a test.
-- The app builds without warnings (`make app`).
+- **Mac:** `make lint` passes (it runs `swift format lint` with the repo's `.swift-format` config; `make format` fixes most issues), `make test` passes, and the app builds without warnings (`make app`).
+- **Windows:** `dotnet format windows/Recess.slnx --verify-no-changes` passes, and `dotnet build` (warnings are errors) and `dotnet test` pass.
+- New logic in the engine (`Model/` or `Engine/` on the Mac, `Recess.Core` on Windows) has a test.
 - UI changes include a screenshot in the PR.
 - One topic per PR. Small PRs get reviewed faster.
+
+CI checks both apps on every pull request, and builds a Windows zip and installer you can download from the run.
 
 ## Code guidelines
 
 - Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) first: it explains where things live and how a break flows through the scheduler.
 - UI state lives on the main actor. `AppModel` and `Scheduler` are `@MainActor`.
 - Don't write to `AppModel.breaks` unless a value really changed (see the architecture doc).
-- New settings fields need a default value so older JSON files still load: `Store.decodeMerging` fills missing keys from the defaults.
+- New settings fields need a default value so older JSON files still load: `Store.decodeMerging` fills missing keys from the defaults (on Windows, every property has an initial value for the same reason).
+- On Windows, the engine reaches the system only through the small interfaces in `Recess.Core/Engine/Seams.cs`, so it stays testable with a fake clock. Win32 calls go through CsWin32 (`NativeMethods.txt`).
 - Never run user-supplied strings through a shell. Scripts are executed by path, with arguments passed separately.
 - Keep wording friendly and plain in the UI, and in your own words. **Don't copy text, images or code from proprietary apps.** Recess is an independent project.
 
 ## Themes
 
-Themes are folders: `Name.recesstheme/Info.json` plus `Name.recesstheme/Documents/index.html`. Copy one from `Resources/Themes` to get started, and see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#themes) for how a theme can get the break name and time remaining. To contribute a theme, add it under `Resources/Themes`. It must be your own work, or carry a compatible licence that you name in the PR. It shouldn't load remote scripts.
+Themes are folders: `Name.recesstheme/Info.json` plus `Name.recesstheme/Documents/index.html`, and the same themes work on both systems. Copy one from `Resources/Themes` to get started, and see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#themes) for how a theme can get the break name and time remaining. To contribute a theme, add it under `Resources/Themes`. It must be your own work, or carry a compatible licence that you name in the PR. It shouldn't load remote scripts.
 
 ## The website
 

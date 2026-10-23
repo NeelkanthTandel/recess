@@ -1,6 +1,6 @@
 # Recess for Windows
 
-The Windows version of Recess: C# and WPF on .NET 10. It's being built in milestones toward the same features as the Mac app; until it ships, the releases only contain the Mac app.
+The Windows version of Recess: C# and WPF on .NET 10, with the same features as the Mac app. Releases carry both; see [docs/RELEASING.md](../docs/RELEASING.md).
 
 ## Layout
 
@@ -9,6 +9,7 @@ The Windows version of Recess: C# and WPF on .NET 10. It's being built in milest
 | `src/Recess.Core` | The scheduling engine and data model. No Windows APIs, so it builds and its tests run on any OS. |
 | `src/Recess.App` | The Windows app: tray icon, break screens, settings, and everything that talks to Windows. |
 | `tests/Recess.Core.Tests` | Tests for the engine (xUnit). |
+| `installer/Recess.iss` | The Inno Setup script for `Recess-Setup.exe`. |
 
 The HTML break themes are shared with the Mac app: the build copies them from `Resources/Themes`.
 

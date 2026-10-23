@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recess: a break reminder for your Mac</title>
-  <meta name="description" content="Recess dims your Mac's screen when it's time to rest your eyes, stretch or get up. Free and open source, with no account and no tracking.">
+  <title>Recess: a break reminder for Mac and Windows</title>
+  <meta name="description" content="Recess dims your screen when it's time to rest your eyes, stretch or get up. Free and open source for Mac and Windows, with no account and no tracking.">
   <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Recess: a break reminder for your Mac">
+  <meta property="og:title" content="Recess: a break reminder for Mac and Windows">
   <meta property="og:description" content="Recess dims your screen when it's time for a break. Free and open source.">
   <link rel="canonical" href="https://recess.always17.com/">
   <meta property="og:url" content="https://recess.always17.com/">
@@ -39,17 +39,17 @@
       <div class="sky-copy">
         <h1>Look up from the screen.</h1>
         <p class="sky-lead">
-          Recess is a break reminder for your Mac. When it's time to rest your eyes, stretch or get up,
+          Recess is a break reminder for Mac and Windows. When it's time to rest your eyes, stretch or get up,
           it gently dims the screen, and steps back the moment you return.
         </p>
         <div class="sky-actions">
-          <a class="btn btn-solid" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg">Download for Mac</a>
+          <a class="btn btn-solid" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg" data-download>Download for Mac</a>
           <a class="btn btn-glass" href="#night" data-start-break>Take a 20-second break</a>
         </div>
-        <p class="sky-fine">Free and open source. macOS 14 Sonoma or later, on Apple Silicon and Intel.</p>
+        <p class="sky-fine" data-download-note>Free and open source. For macOS 14 or later, or <a href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe">download for Windows</a>.</p>
       </div>
 
-      <figure class="display" aria-label="A Mac screen that Recess has dimmed for a break">
+      <figure class="display" aria-label="A computer screen that Recess has dimmed for a break">
         <div class="display-screen">
           <div class="menubar" aria-hidden="true">
             <span class="menubar-apple"></span>
@@ -185,8 +185,8 @@
           <h3>Yours to shape</h3>
           <ul>
             <li>Break screens with a breathing guide, clocks, eye and desk stretches, or your own photos, text or video.</li>
-            <li>Sounds, spoken reminders, and your own AppleScript or shell scripts.</li>
-            <li>A countdown in the menu bar, and global keyboard shortcuts.</li>
+            <li>Sounds, spoken reminders, and your own scripts: AppleScript or shell on a Mac, PowerShell on Windows.</li>
+            <li>A countdown in the menu bar or notification area, and global keyboard shortcuts.</li>
             <li><code>recess://</code> links for Shortcuts and automation.</li>
           </ul>
         </div>
@@ -194,27 +194,49 @@
     </section>
 
     <!-- 5. Installing, quietly. -->
-    <section class="install" id="install" aria-labelledby="install-title">
+    <section class="install" id="install" aria-labelledby="install-title" data-os="mac">
       <div class="install-copy">
         <h2 id="install-title">Installing takes a minute.</h2>
-        <p>
-          Recess isn't notarized by Apple yet, so the first time you open it macOS asks you to confirm.
-          You only do this once.
-        </p>
-        <ol class="steps">
-          <li>Open <b>Recess.dmg</b> and drag Recess into Applications.</li>
-          <li>Open Recess. When macOS says it can't verify the app, click <b>Done</b>.</li>
-          <li>In <b>System Settings › Privacy &amp; Security</b>, scroll to Security and click <b>Open Anyway</b>.</li>
-          <li>Confirm with Touch ID or your password, then click <b>Open</b>.</li>
-        </ol>
-        <details class="terminal">
-          <summary>Rather use Terminal?</summary>
-          <pre><code>xattr -dr com.apple.quarantine /Applications/Recess.app
+        <div class="os-tabs" role="tablist" aria-label="Your computer">
+          <button type="button" role="tab" id="tab-mac" aria-controls="install-mac" aria-selected="true" data-os-tab="mac">Mac</button>
+          <button type="button" role="tab" id="tab-windows" aria-controls="install-windows" aria-selected="false" data-os-tab="windows">Windows</button>
+        </div>
+        <div class="os-mac" id="install-mac" role="tabpanel" aria-labelledby="tab-mac">
+          <p>
+            Recess isn't notarized by Apple yet, so the first time you open it macOS asks you to confirm.
+            You only do this once. It needs macOS 14 Sonoma or later, on Apple Silicon or Intel.
+          </p>
+          <ol class="steps">
+            <li>Open <b>Recess.dmg</b> and drag Recess into Applications.</li>
+            <li>Open Recess. When macOS says it can't verify the app, click <b>Done</b>.</li>
+            <li>In <b>System Settings › Privacy &amp; Security</b>, scroll to Security and click <b>Open Anyway</b>.</li>
+            <li>Confirm with Touch ID or your password, then click <b>Open</b>.</li>
+          </ol>
+          <details class="terminal">
+            <summary>Rather use Terminal?</summary>
+            <pre><code>xattr -dr com.apple.quarantine /Applications/Recess.app
 open /Applications/Recess.app</code></pre>
-        </details>
+          </details>
+        </div>
+        <div class="os-windows" id="install-windows" role="tabpanel" aria-labelledby="tab-windows">
+          <p>
+            Recess for Windows isn't code-signed yet, so Windows may stop it the first time.
+            It installs for your account only, without admin rights, on Windows 10 (version 2004) or 11.
+          </p>
+          <ol class="steps">
+            <li>Run <a href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe"><b>Recess-Setup.exe</b></a>.</li>
+            <li>If Windows says it protected your PC, click <b>More info</b>, then <b>Run anyway</b>.</li>
+            <li>Recess opens with a short setup, then lives by the clock in the notification area.</li>
+            <li>To keep its icon in view, turn Recess on under <b>Settings › Personalization › Taskbar</b>.</li>
+          </ol>
+          <p class="install-alt">
+            Rather not install? <a href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-windows.zip">Recess-windows.zip</a>
+            is a portable copy: unzip it anywhere and run <code>Recess.exe</code>.
+          </p>
+        </div>
       </div>
 
-      <figure class="settings-mock" aria-label="Where to find Open Anyway in System Settings">
+      <figure class="settings-mock os-mac" aria-label="Where to find Open Anyway in System Settings">
         <div class="settings-head" aria-hidden="true">
           <span class="settings-dot"></span><span class="settings-dot"></span><span class="settings-dot"></span>
           <span class="settings-title">Privacy &amp; Security</span>
@@ -231,16 +253,33 @@ open /Applications/Recess.app</code></pre>
           Every line of code is <a href="https://github.com/NeelkanthTandel/recess">on GitHub</a>, and each release lists the download's SHA-256 checksum.
         </figcaption>
       </figure>
+
+      <figure class="settings-mock os-windows" aria-label="Where to find Run anyway when Windows stops the installer">
+        <div class="settings-head smartscreen-head" aria-hidden="true">
+          <span class="settings-title">Windows protected your PC</span>
+        </div>
+        <div class="settings-body">
+          <p class="settings-section">SmartScreen didn't recognise this app.</p>
+          <div class="settings-row"><span>App: Recess-Setup.exe</span><span class="settings-link">More info</span></div>
+          <div class="settings-row"><span>Publisher: Unknown publisher</span><span class="settings-button">Run anyway</span></div>
+        </div>
+        <figcaption>
+          Windows asks because the installer isn't code-signed yet. Every line of code is
+          <a href="https://github.com/NeelkanthTandel/recess">on GitHub</a>, and each release lists the download's SHA-256 checksum.
+        </figcaption>
+      </figure>
     </section>
 
     <section class="private" aria-labelledby="private-title">
-      <h2 id="private-title">Nothing leaves your Mac.</h2>
+      <h2 id="private-title">Nothing leaves your computer.</h2>
       <p>
-        No account, no analytics, and no network requests of its own. Your settings are plain files in your
-        Library folder. Recess is MIT licensed, so you can read every line, or build it yourself:
+        No account, no analytics, and no network requests of its own; on Windows it fetches only the calendars you
+        add. Your settings are plain files on your computer. Recess is MIT licensed, so you can read every line,
+        or build it yourself:
       </p>
       <pre class="build"><code>git clone https://github.com/NeelkanthTandel/recess.git
-cd recess &amp;&amp; make install</code></pre>
+cd recess &amp;&amp; make install                                  # Mac
+cd recess\windows; dotnet run --project src/Recess.App -c Release  # Windows</code></pre>
     </section>
   </main>
 

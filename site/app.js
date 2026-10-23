@@ -6,6 +6,42 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const format = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
+  // Downloads: offer the visitor's own system first. Without this script the page offers the
+  // Mac download with a link for Windows, so nothing depends on it.
+  const releases = "https://github.com/NeelkanthTandel/recess/releases/latest/download/";
+  const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || "";
+  const onWindows = /win/i.test(platform) && !/darwin|mac/i.test(platform);
+  const download = document.querySelector("[data-download]");
+  const note = document.querySelector("[data-download-note]");
+  if (onWindows && download && note) {
+    download.href = releases + "Recess-Setup.exe";
+    download.textContent = "Download for Windows";
+    note.textContent = "Free and open source. For Windows 10 and 11, or ";
+    const mac = document.createElement("a");
+    mac.href = releases + "Recess.dmg";
+    mac.textContent = "download for Mac";
+    note.append(mac, ".");
+  }
+
+  // Install steps: Mac and Windows tabs, starting on the visitor's system.
+  const install = document.querySelector(".install[data-os]");
+  const tabs = document.querySelectorAll("[data-os-tab]");
+  const showOs = (os) => {
+    if (!install) return;
+    install.dataset.os = os;
+    tabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.osTab === os)));
+  };
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => showOs(tab.dataset.osTab));
+    tab.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const next = tab.dataset.osTab === "mac" ? "windows" : "mac";
+      showOs(next);
+      document.querySelector(`[data-os-tab="${next}"]`).focus();
+    });
+  });
+  if (onWindows) showOs("windows");
+
   // Hero: the floating screen dims once into a short break, then the work comes back.
   const hero = document.querySelector("[data-hero-break]");
   const heroTime = document.querySelector("[data-hero-time]");
