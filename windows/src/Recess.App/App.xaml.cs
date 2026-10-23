@@ -19,6 +19,8 @@ public partial class App : Application, IUrlCommandHost
     private ActionRunner? actions;
     private TrayController? tray;
     private HotKeys? hotKeys;
+    private readonly KeyboardLock keyboardLock = new();
+    private BreakSession? lockedSession;
     private SettingsContext? settings;
     private string shortcutsKey = "";
     private DispatcherTimer? timer;
@@ -62,16 +64,32 @@ public partial class App : Application, IUrlCommandHost
         model = RecessModel.Load(store);
         system = new SystemMonitor();
         activity = new ActivityRecorder(store.ActivityFolder, () => model.Settings, clock);
-        actions = new ActionRunner(clock);
+        actions = new ActionRunner(clock, store);
+        SampleScripts.InstallOnce(store.ScriptsFolder);
         var themes = new ThemeCatalog(store.ThemesFolder);
         var presenter = new BreakPresenter(clock, themes);
-        scheduler = new Scheduler(model, clock, system, new AskPanel(clock), presenter, actions, new NoCalendar(), new NoScripts(), activity,
-            () => Processes.Front() is { } f ? (f.Id, f.Name) : null);
+        presenter.Shown += session =>
+        {
+            if (session.LocksAppSwitching)
+            {
+                lockedSession = session;
+                keyboardLock.Start();
+            }
+        };
+        presenter.Hidden += session =>
+        {
+            keyboardLock.Stop();
+            lockedSession = null;
+            // "Loop until the break ends."
+            actions.StopLoopingSounds();
+        };
+        scheduler = new Scheduler(model, clock, system, new AskPanel(clock), presenter, actions, new NoCalendar(),
+            new ScriptConditions(store.ScriptsFolder), activity, () => Processes.Front() is { } f ? (f.Id, f.Name) : null);
 
         var commands = new AppCommands
         {
             OpenSettings = OpenSettings,
-            Quit = Shutdown,
+            Quit = Quit,
             StopSound = actions.StopAllSound,
             IsSoundPlaying = () => actions.IsSoundPlaying,
         };
@@ -123,6 +141,17 @@ public partial class App : Application, IUrlCommandHost
             // Without a tray icon, opening Recess is the way to reach Settings.
             OpenSettings(null, null);
         }
+    }
+
+    /// <summary>Quits, except during a break that locks the computer.</summary>
+    private void Quit()
+    {
+        if (lockedSession is not null)
+        {
+            actions?.Beep();
+            return;
+        }
+        Shutdown();
     }
 
     private void Cycle()
@@ -201,14 +230,9 @@ public partial class App : Application, IUrlCommandHost
         activity?.Save();
         tray?.Dispose();
         hotKeys?.Dispose();
+        keyboardLock.Dispose();
         system?.Dispose();
         instance?.Dispose();
         base.OnExit(e);
-    }
-
-    /// <summary>Script rules arrive with the next milestone.</summary>
-    private sealed class NoScripts : IScriptConditions
-    {
-        public bool Result(string scriptFilename) => false;
     }
 }
