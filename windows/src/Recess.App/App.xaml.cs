@@ -18,6 +18,9 @@ public partial class App : Application, IUrlCommandHost
     private ActivityRecorder? activity;
     private ActionRunner? actions;
     private TrayController? tray;
+    private HotKeys? hotKeys;
+    private SettingsContext? settings;
+    private string shortcutsKey = "";
     private DispatcherTimer? timer;
     private readonly IClock clock = new SystemClock();
 
@@ -75,6 +78,32 @@ public partial class App : Application, IUrlCommandHost
         tray = new TrayController(model, scheduler, clock, commands);
         tray.SetVisible(model.Settings.ShowStatusMenu);
 
+        hotKeys = new HotKeys();
+        settings = new SettingsContext
+        {
+            Model = model,
+            Scheduler = scheduler,
+            Clock = clock,
+            Store = store,
+            Themes = themes,
+            HotKeys = hotKeys,
+            Actions = actions,
+            Activity = activity,
+            Commands = commands,
+            ShortcutsChanged = RegisterShortcuts,
+            PresentationChanged = () => tray.SetVisible(model.Settings.ShowStatusMenu),
+            OpenSetupAssistant = () => SetupAssistant.Open(settings!),
+        };
+        RegisterShortcuts();
+        model.Changed += () =>
+        {
+            // Per-break shortcuts follow the breaks (added, deleted, or given a new shortcut).
+            if (ShortcutsKey() != shortcutsKey)
+            {
+                RegisterShortcuts();
+            }
+        };
+
         scheduler.Start();
         timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         timer.Tick += (_, _) => Cycle();
@@ -84,6 +113,10 @@ public partial class App : Application, IUrlCommandHost
         if (link is not null)
         {
             RunLink(link);
+        }
+        else if (!model.Settings.HasCompletedSetup)
+        {
+            SetupAssistant.Open(settings);
         }
         else if (!model.Settings.ShowStatusMenu)
         {
@@ -122,7 +155,44 @@ public partial class App : Application, IUrlCommandHost
 
     public void StopSound() => actions?.StopAllSound();
 
-    public void OpenSettings(string? page, Guid? breakId) => SettingsWindow.Open(model!, scheduler!, clock);
+    public void OpenSettings(string? page, Guid? breakId) => SettingsWindow.Open(settings!, page, breakId);
+
+    private string ShortcutsKey()
+    {
+        var s = model!.Settings.Shortcuts;
+        return string.Join('|', new[] { s.StartNext, s.Postpone1, s.Postpone2, s.Skip, s.PauseIndefinitely, s.Resume, s.Reset, s.StopSound }
+            .Concat(model.Breaks.Select(b => b.StartShortcut)).Select(k => k?.ToString() ?? "-"))
+            + string.Join(',', model.Breaks.Select(b => b.Id));
+    }
+
+    private void RegisterShortcuts()
+    {
+        shortcutsKey = ShortcutsKey();
+        var s = model!.Settings.Shortcuts;
+        var sched = scheduler!;
+        var list = new List<(KeyCombo, Action)>();
+        void Add(KeyCombo? combo, Action run)
+        {
+            if (combo is not null)
+            {
+                list.Add((combo, run));
+            }
+        }
+        Add(s.StartNext, sched.StartNextBreak);
+        Add(s.Postpone1, () => sched.PostponeNext(1));
+        Add(s.Postpone2, () => sched.PostponeNext(2));
+        Add(s.Skip, sched.SkipNext);
+        Add(s.PauseIndefinitely, () => sched.PauseAll(null));
+        Add(s.Resume, sched.ResumeAll);
+        Add(s.Reset, sched.ResetAll);
+        Add(s.StopSound, () => actions!.StopAllSound());
+        foreach (var b in model.Breaks)
+        {
+            var id = b.Id;
+            Add(b.StartShortcut, () => sched.StartBreak(id, manual: true));
+        }
+        hotKeys!.Set(list);
+    }
 
     protected override void OnExit(ExitEventArgs e)
     {
@@ -130,6 +200,7 @@ public partial class App : Application, IUrlCommandHost
         model?.SaveNow();
         activity?.Save();
         tray?.Dispose();
+        hotKeys?.Dispose();
         system?.Dispose();
         instance?.Dispose();
         base.OnExit(e);
