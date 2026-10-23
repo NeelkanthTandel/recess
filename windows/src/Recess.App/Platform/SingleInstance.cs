@@ -17,7 +17,11 @@ internal sealed class SingleInstance : IDisposable
 
     private const int MaxMessage = 4096;
 
+    /// <summary>A fixed name the installer checks (Inno Setup's AppMutex) to ask you to quit Recess first.</summary>
+    public const string InstallerMutexName = @"Local\RecessAppRunning";
+
     private readonly Mutex mutex;
+    private readonly Mutex installerMutex = new(initiallyOwned: false, InstallerMutexName);
     private readonly string pipeName;
     private readonly CancellationTokenSource stop = new();
 
@@ -39,9 +43,6 @@ internal sealed class SingleInstance : IDisposable
         }
         return new SingleInstance(mutex, pipeName);
     }
-
-    /// <summary>The mutex name, also given to the installer so it can tell whether Recess is running.</summary>
-    public static string MutexName => Names().Mutex;
 
     private static (string Mutex, string Pipe) Names()
     {
@@ -124,6 +125,7 @@ internal sealed class SingleInstance : IDisposable
         stop.Cancel();
         mutex.ReleaseMutex();
         mutex.Dispose();
+        installerMutex.Dispose();
         stop.Dispose();
     }
 }
