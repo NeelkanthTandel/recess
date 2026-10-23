@@ -1,0 +1,5 @@
+# LF everywhere, so checkouts on Windows match and format checks pass.
+* text=auto eol=lf
+# Windows batch files need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf

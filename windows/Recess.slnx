@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Recess.App/Recess.App.csproj" />
+    <Project Path="src/Recess.Core/Recess.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Recess.Core.Tests/Recess.Core.Tests.csproj" />
+  </Folder>
+</Solution>

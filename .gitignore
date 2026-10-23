@@ -7,3 +7,10 @@ xcuserdata/
 DerivedData/
 .DS_Store
 .claude/
+# Windows app (windows/)
+bin/
+obj/
+.vs/
+*.user
+TestResults/
+windows/publish/

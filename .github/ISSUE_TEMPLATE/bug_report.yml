@@ -19,10 +19,10 @@ body:
     validations:
       required: true
   - type: input
-    id: macos
+    id: os
     attributes:
-      label: macOS version
-      placeholder: e.g. 15.3
+      label: Mac or Windows, and its version
+      placeholder: e.g. macOS 15.3, or Windows 11 24H2
     validations:
       required: true
   - type: input

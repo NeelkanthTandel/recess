@@ -13,3 +13,20 @@ indent_size = 2
 
 [Makefile]
 indent_style = tab
+
+[*.{csproj,props,targets,slnx,xaml,manifest}]
+indent_size = 2
+
+[*.xaml]
+indent_size = 4
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+dotnet_diagnostic.IDE0005.severity = warning
