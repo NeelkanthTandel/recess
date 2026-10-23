@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Path = System.Windows.Shapes.Path;
 
-namespace Recess.App.Break;
+namespace Recess.App.Breaks;
 
 /// <summary>The built-in "Default" theme: the break's name, a countdown ring, and a suggestion.</summary>
 internal sealed class DefaultThemeView : Grid

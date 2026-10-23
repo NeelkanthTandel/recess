@@ -121,6 +121,9 @@ internal sealed class TrayIcon : IDisposable
         return IntPtr.Zero;
     }
 
+    /// <summary>Opens the menu at the mouse pointer.</summary>
+    public void ShowMenu() => OpenMenu();
+
     private void OpenMenu()
     {
         var menu = new ContextMenu { Placement = PlacementMode.MousePoint };

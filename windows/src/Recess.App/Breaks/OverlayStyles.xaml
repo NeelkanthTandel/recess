@@ -3,6 +3,7 @@
     <!-- Break-screen buttons: a translucent capsule with a hairline edge, as on the Mac. -->
     <Style x:Key="OverlayButton" TargetType="Button">
         <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="#29FFFFFF" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Margin" Value="6,0" />
@@ -11,7 +12,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Capsule" CornerRadius="19" Padding="18,9" Background="#29FFFFFF"
+                    <Border x:Name="Capsule" CornerRadius="19" Padding="18,9" Background="{TemplateBinding Background}"
                             BorderBrush="#40FFFFFF" BorderThickness="1">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>

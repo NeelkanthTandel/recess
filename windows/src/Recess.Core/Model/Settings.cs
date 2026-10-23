@@ -15,6 +15,9 @@ public enum StatusIcon
     MindBody,
     LastDoneLabel,
     NextDueLabel,
+
+    /// <summary>Windows only: the time to the next break, drawn in the icon (tray icons can't show text beside them).</summary>
+    Countdown,
 }
 
 /// <summary>What the tray icon tells you about your breaks.</summary>
@@ -57,7 +60,8 @@ public static class SettingsTitles
         StatusIcon.Strength => "Weights",
         StatusIcon.MindBody => "Meditating figure",
         StatusIcon.LastDoneLabel => "Colour of the last break",
-        _ => "Colour of the next break",
+        StatusIcon.NextDueLabel => "Colour of the next break",
+        _ => "Time until the next break",
     };
 
     public static string Title(this StatusTitle v) => v switch
@@ -116,7 +120,7 @@ public sealed class AppSettings
     // General
     public bool ShowDockIcon { get; set; }
     public bool ShowStatusMenu { get; set; } = true;
-    public StatusIcon StatusIcon { get; set; } = StatusIcon.Cup;
+    public StatusIcon StatusIcon { get; set; } = StatusIcon.Countdown;
     public StatusTitle StatusTitle { get; set; } = StatusTitle.BriefCountdown;
     public bool StatusOnlyLong { get; set; }
     public bool RelativeDates { get; set; } = true;

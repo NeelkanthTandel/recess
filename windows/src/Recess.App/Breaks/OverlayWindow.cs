@@ -9,7 +9,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 
-namespace Recess.App.Break;
+namespace Recess.App.Breaks;
 
 /// <summary>How a break window covers its display.</summary>
 internal enum OverlayMode
@@ -32,13 +32,14 @@ internal sealed class OverlayWindow : Window
 {
     private static readonly HWND HwndTopmost = new(-1);
 
-    private readonly Platform.Monitor monitor;
+    private RECT bounds;
     private readonly OverlayMode mode;
     private bool allowClose;
 
-    public OverlayWindow(Platform.Monitor monitor, OverlayMode mode, Color dim, UIElement? theme, UIElement? controls)
+    /// <param name="bounds">The area to cover, in physical pixels: a whole display, or its work area to leave the taskbar showing.</param>
+    public OverlayWindow(RECT bounds, OverlayMode mode, Color dim, UIElement? theme, UIElement? controls)
     {
-        this.monitor = monitor;
+        this.bounds = bounds;
         this.mode = mode;
         WindowStyle = WindowStyle.None;
         AllowsTransparency = true;
@@ -90,12 +91,19 @@ internal sealed class OverlayWindow : Window
     private void PlaceOnMonitor()
     {
         var hwnd = new HWND(new WindowInteropHelper(this).Handle);
-        var r = monitor.Bounds;
+        var r = bounds;
         PInvoke.SetWindowPos(hwnd, HwndTopmost, r.left, r.top, r.right - r.left, r.bottom - r.top,
             SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
     }
 
     public IntPtr Handle => new WindowInteropHelper(this).Handle;
+
+    /// <summary>Moves the window to new bounds, e.g. after the display layout changed.</summary>
+    public void MoveTo(RECT newBounds)
+    {
+        bounds = newBounds;
+        PlaceOnMonitor();
+    }
 
     /// <summary>Fades in or out over the given time.</summary>
     public void Fade(double to, TimeSpan duration, Action? done = null)
