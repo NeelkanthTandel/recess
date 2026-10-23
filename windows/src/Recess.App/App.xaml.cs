@@ -19,6 +19,7 @@ public partial class App : Application, IUrlCommandHost
     private ActionRunner? actions;
     private TrayController? tray;
     private HotKeys? hotKeys;
+    private CalendarFetcher? calendars;
     private readonly KeyboardLock keyboardLock = new();
     private BreakSession? lockedSession;
     private SettingsContext? settings;
@@ -83,8 +84,11 @@ public partial class App : Application, IUrlCommandHost
             // "Loop until the break ends."
             actions.StopLoopingSounds();
         };
-        scheduler = new Scheduler(model, clock, system, new AskPanel(clock), presenter, actions, new NoCalendar(),
+        var feeds = new CalendarFeeds();
+        scheduler = new Scheduler(model, clock, system, new AskPanel(clock), presenter, actions, feeds,
             new ScriptConditions(store.ScriptsFolder), activity, () => Processes.Front() is { } f ? (f.Id, f.Name) : null);
+        feeds.Changed += scheduler.CalendarsChanged;
+        calendars = new CalendarFetcher(model, feeds);
 
         var commands = new AppCommands
         {
@@ -107,6 +111,7 @@ public partial class App : Application, IUrlCommandHost
             HotKeys = hotKeys,
             Actions = actions,
             Activity = activity,
+            Calendars = calendars,
             Commands = commands,
             ShortcutsChanged = RegisterShortcuts,
             PresentationChanged = () => tray.SetVisible(model.Settings.ShowStatusMenu),
@@ -231,6 +236,7 @@ public partial class App : Application, IUrlCommandHost
         tray?.Dispose();
         hotKeys?.Dispose();
         keyboardLock.Dispose();
+        calendars?.Dispose();
         system?.Dispose();
         instance?.Dispose();
         base.OnExit(e);

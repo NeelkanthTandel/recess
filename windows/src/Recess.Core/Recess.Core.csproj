@@ -5,6 +5,9 @@
     <RootNamespace>Recess.Core</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Ical.Net" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleTo Include="Recess.Core.Tests" />
   </ItemGroup>
 </Project>

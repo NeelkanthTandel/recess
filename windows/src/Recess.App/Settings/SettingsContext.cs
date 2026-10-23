@@ -24,6 +24,8 @@ internal sealed class SettingsContext
 
     public required ActivityRecorder Activity { get; init; }
 
+    public required CalendarFetcher Calendars { get; init; }
+
     public required AppCommands Commands { get; init; }
 
     /// <summary>Called when the shortcuts change, so they're registered again.</summary>
