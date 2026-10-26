@@ -1,0 +1,42 @@
+# Recess welcomes search engines and AI assistants. Everything here is public.
+# A crawler follows only the group that names it, so every named group repeats "Allow: /".
+# See docs/SEO.md for what each one does.
+
+# Search engines and AI answer engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: DuckDuckBot
+User-agent: DuckAssistBot
+User-agent: OAI-SearchBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+User-agent: Amzn-SearchBot
+User-agent: MistralAI-Index
+Allow: /
+
+# Pages fetched when someone asks an assistant about Recess
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Perplexity-User
+User-agent: MistralAI-User
+User-agent: Amzn-User
+User-agent: meta-externalfetcher
+Allow: /
+
+# Model training and open datasets: allowed, so assistants know Recess exists
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: Amazonbot
+User-agent: MistralAI-Training
+Allow: /
+
+# Everyone else
+User-agent: *
+Allow: /
+
+Sitemap: https://recess.always17.com/sitemap.xml

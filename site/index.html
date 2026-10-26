@@ -3,20 +3,94 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recess: a break reminder for Mac and Windows</title>
-  <meta name="description" content="Recess dims your screen when it's time to rest your eyes, stretch or get up. Free and open source for Mac and Windows, with no account and no tracking.">
-  <meta name="color-scheme" content="light dark">
-  <meta property="og:title" content="Recess: a break reminder for Mac and Windows">
-  <meta property="og:description" content="Recess dims your screen when it's time for a break. Free and open source.">
+  <title>Recess: a free break reminder for Mac and Windows</title>
+  <meta name="description" content="Recess is a free, open-source break reminder for Mac and Windows. It dims your screen when it's time to rest your eyes, stretch or get up, and steps back when you return. No account, no tracking.">
   <link rel="canonical" href="https://recess.always17.com/">
-  <meta property="og:url" content="https://recess.always17.com/">
-  <meta property="og:image" content="https://recess.always17.com/assets/sky.jpg">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#3d6bb8">
+
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Recess">
+  <meta property="og:url" content="https://recess.always17.com/">
+  <meta property="og:title" content="Recess: a free break reminder for Mac and Windows">
+  <meta property="og:description" content="Recess dims your screen when it's time to rest your eyes, stretch or get up. Free and open source, with no account and no tracking.">
+  <meta property="og:image" content="https://recess.always17.com/assets/og.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Recess app icon over a soft morning sky, with the words: Recess, a free break reminder for Mac and Windows.">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="preload" href="fonts/InstrumentSerif-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="fonts/AtkinsonHyperlegibleNext.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/sky.jpg" as="image">
+  <link rel="preload" href="fonts/InstrumentSerif-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/AtkinsonHyperlegibleNext.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://recess.always17.com/#website",
+        "url": "https://recess.always17.com/",
+        "name": "Recess",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://recess.always17.com/#author",
+        "name": "Neelkanth Tandel",
+        "url": "https://github.com/NeelkanthTandel"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://recess.always17.com/#app",
+        "name": "Recess",
+        "description": "A free, open-source break reminder for Mac and Windows. Recess dims the screen when it's time to rest your eyes, stretch or get up, and counts time away from the computer as a break.",
+        "url": "https://recess.always17.com/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "macOS 14 or later, Windows 10 (version 2004) or later, Windows 11",
+        "softwareVersion": "1.1.0",
+        "datePublished": "2026-10-23",
+        "downloadUrl": [
+          "https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg",
+          "https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe",
+          "https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-windows.zip"
+        ],
+        "releaseNotes": "https://github.com/NeelkanthTandel/recess/releases/latest",
+        "image": "https://recess.always17.com/assets/og.jpg",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "isAccessibleForFree": true,
+        "license": "https://opensource.org/license/mit",
+        "author": {
+          "@id": "https://recess.always17.com/#author"
+        },
+        "sameAs": [
+          "https://github.com/NeelkanthTandel/recess"
+        ],
+        "featureList": [
+          "Micro-breaks and longer breaks on your own schedule, including the 20-20-20 rule",
+          "Dims the screen with a countdown; postpone, skip or end early",
+          "Time away from the keyboard, sleep and a locked screen count as a break",
+          "Waits during fullscreen apps, chosen apps, calendar events and, on Windows, calls",
+          "Limits on postpones and skips, and an optional break lock",
+          "Break screens with eye and desk stretches, a breathing guide, clocks or your own photos, text or video",
+          "Sounds, notifications, spoken reminders and your own scripts",
+          "Global keyboard shortcuts and recess:// links for automation",
+          "No account, no analytics; settings stay on your computer"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -26,12 +100,13 @@
     <section class="sky">
       <header class="topbar">
         <a class="brand" href="./">
-          <img src="assets/icon.png" alt="" width="32" height="32">
+          <img src="assets/icon-64.png" alt="" width="32" height="32">
           Recess
         </a>
         <nav aria-label="Main">
           <a href="#hour">How it works</a>
           <a href="#install">Installing</a>
+          <a href="#questions">Questions</a>
           <a href="https://github.com/NeelkanthTandel/recess">Source code</a>
         </nav>
       </header>
@@ -39,14 +114,14 @@
       <div class="sky-copy">
         <h1>Look up from the screen.</h1>
         <p class="sky-lead">
-          Recess is a break reminder for Mac and Windows. When it's time to rest your eyes, stretch or get up,
+          Recess is a free, open-source break reminder for Mac and Windows. When it's time to rest your eyes, stretch or get up,
           it gently dims the screen, and steps back the moment you return.
         </p>
         <div class="sky-actions">
           <a class="btn btn-solid" href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg" data-download>Download for Mac</a>
           <a class="btn btn-glass" href="#night" data-start-break>Take a 20-second break</a>
         </div>
-        <p class="sky-fine" data-download-note>Free and open source. For macOS 14 or later, or <a href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe">download for Windows</a>.</p>
+        <p class="sky-fine" data-download-note>For macOS 14 or later, or <a href="https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe">download for Windows</a>.</p>
       </div>
 
       <figure class="display" aria-label="A computer screen that Recess has dimmed for a break">
@@ -55,7 +130,7 @@
             <span class="menubar-apple"></span>
             <span>Editor</span><span>File</span><span>View</span>
             <span class="menubar-spacer"></span>
-            <span class="menubar-recess"><img src="assets/icon.png" alt="" width="14" height="14"><span data-menubar>0s</span></span>
+            <span class="menubar-recess"><img src="assets/icon-64.png" alt="" width="14" height="14"><span data-menubar>0s</span></span>
           </div>
           <div class="work" aria-hidden="true">
             <div class="work-window">
@@ -280,6 +355,93 @@ open /Applications/Recess.app</code></pre>
       <pre class="build"><code>git clone https://github.com/NeelkanthTandel/recess.git
 cd recess &amp;&amp; make install                                  # Mac
 cd recess\windows; dotnet run --project src/Recess.App -c Release  # Windows</code></pre>
+    </section>
+
+    <!-- 7. The questions people ask before they download. llms.txt repeats the answers; keep them in step. -->
+    <section class="faq" id="questions" aria-labelledby="faq-title">
+      <h2 id="faq-title">Questions, answered.</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3>Is Recess really free?</h3>
+          <p>
+            Yes. There's no trial, subscription, paid tier or advert, and no account to make. Recess is open source
+            under the MIT License, so anyone can read, change and share the code.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Does it work on Mac and Windows?</h3>
+          <p>
+            Both. On a Mac it needs macOS 14 Sonoma or later, on Apple Silicon or Intel. On Windows it needs
+            Windows 10 (version 2004) or Windows 11, 64-bit, and it also runs on Windows on Arm. The breaks, rules
+            and themes are the same on both.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>What's the 20-20-20 rule, and can Recess follow it?</h3>
+          <p>
+            Every 20 minutes, look at something about 20 feet (6 metres) away for 20 seconds. It's a rule of thumb
+            <a href="https://www.aao.org/eye-health/diseases/what-is-eye-strain">eye doctors suggest</a> for tired
+            eyes at a screen. Recess's micro-break starts at 15 seconds every 15 minutes; set it to 20 seconds every
+            20 minutes and you have the rule exactly. Recess is a reminder, not medical advice: if your eyes keep
+            hurting, see an eye doctor.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I use it as a Pomodoro timer?</h3>
+          <p>
+            For the breaks, yes. Make a 5-minute break every 25 minutes, timed from when the last one ended, and add
+            a longer break every two hours; when two are due together, the bigger one wins. Recess times your breaks
+            rather than your tasks, so there's no to-do list.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Will it remind me to stretch, stand up or sit up straight?</h3>
+          <p>
+            It starts with a ten-minute break every hour to get up and move. Break screens can walk you through eye
+            and desk stretches or a breathing guide, or show your own words, like a reminder to check your posture.
+            It never uses your camera; it only reminds you.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Does it work with more than one screen?</h3>
+          <p>
+            Yes. The break appears on your main screen, and you choose whether the others show it too, simply dim,
+            or stay as they are.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Will it interrupt a video call or a presentation?</h3>
+          <p>
+            Not if you don't want it to. Breaks can wait while a fullscreen app or a given app is open, during a
+            calendar event, or, on Windows, while your microphone or camera is in use. A break can also wait until
+            you stop typing, or ask first.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Why does my computer warn me when I open it?</h3>
+          <p>
+            Recess isn't notarized by Apple or code-signed for Windows yet, so each asks you to confirm once,
+            the first time. The code is public, each release lists the SHA-256 checksum of every download, and
+            the app makes no network requests of its own.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>How is it different from other break reminders?</h3>
+          <p>
+            Plenty of good ones exist. Recess is for people who want one that costs nothing, works the same on a
+            Mac and a Windows PC, needs no account, keeps everything on the computer, and can be gentle or strict:
+            you can cap postpones and skips, or lock the computer into the break.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Who makes Recess?</h3>
+          <p>
+            Neelkanth Tandel and the people who contribute on
+            <a href="https://github.com/NeelkanthTandel/recess">GitHub</a>. Ideas, bug reports and pull requests
+            are welcome there.
+          </p>
+        </div>
+      </div>
     </section>
   </main>
 

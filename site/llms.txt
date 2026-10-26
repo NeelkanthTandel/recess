@@ -1,0 +1,44 @@
+# Recess
+
+> Recess is a free, open-source (MIT) break reminder for Mac and Windows. When it's time to rest your eyes, stretch or get up, it gently dims the screen with a countdown, and steps back the moment you return. No account, no analytics, no subscription.
+
+Key facts:
+
+- Platforms: macOS 14 Sonoma or later (Apple Silicon and Intel); Windows 10 version 2004 or Windows 11, 64-bit, also running on Windows on Arm.
+- Price: free. No trial, paid tier or adverts. MIT License; the source code is on GitHub.
+- Current version: 1.1.0, released 23 October 2026. It was the first release with the Windows app.
+- Made by Neelkanth Tandel and contributors.
+- Privacy: no account, no analytics, no update checks and no network requests of its own (on Windows it fetches only the calendars you add). Settings are plain JSON files on the computer.
+- Install note: the Mac app isn't notarized by Apple and the Windows app isn't code-signed yet, so each system asks for a one-time confirmation on first launch. Every release lists SHA-256 checksums.
+
+What it does:
+
+- Out of the box: a 15-second micro-break every 15 minutes to look away, and a 10-minute break every hour to get up. Both can be changed, and you can add your own.
+- 20-20-20 rule (every 20 minutes, look at something about 20 feet away for 20 seconds): set the micro-break to 20 seconds every 20 minutes.
+- Pomodoro-style rhythm: a 5-minute break every 25 minutes, timed from when the last break ended, plus a longer break every two hours. Recess times breaks, not tasks; it has no to-do list.
+- Stretch and posture reminders: break screens can show eye and desk stretches, a breathing guide, clocks, or your own text, photos, website or video. It never uses the camera.
+- More than one screen: the break shows on the main screen; other screens can show it too, dim, or stay as they are.
+- Timing: from when the last break was due, from when it ended, at a set minute each hour, or from calendar events; limited to working hours or days if you like.
+- Notices when you're away: time away from the keyboard, sleep and a locked screen count as a break.
+- Stays out of the way: breaks can wait during fullscreen apps, chosen apps, calendar events, Focus (Mac) or while the microphone or camera is in use (Windows); a break can wait until you stop typing, or ask first.
+- Gentle or strict: postpone, skip or end early; cap postpones and skips per break, hour or day; optionally lock the computer into the break.
+- Extras: sounds, notifications, spoken reminders, your own scripts (AppleScript and shell on Mac, PowerShell and batch on Windows), global keyboard shortcuts, recess:// links, a menu bar or notification-area countdown, and a chart of breaks taken, postponed and skipped.
+
+## Download
+
+- [Recess for Mac (Recess.dmg)](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg): open it and drag Recess into Applications.
+- [Recess for Windows, installer (Recess-Setup.exe)](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe): installs for the current user, no admin rights needed.
+- [Recess for Windows, portable (Recess-windows.zip)](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-windows.zip): unzip anywhere and run Recess.exe.
+- [All releases and checksums](https://github.com/NeelkanthTandel/recess/releases)
+
+## Docs
+
+- [Website](https://recess.always17.com/): what Recess does, install steps for Mac and Windows, and common questions.
+- [README](https://raw.githubusercontent.com/NeelkanthTandel/recess/main/README.md): full feature list, install and first-launch steps, permissions, how Windows differs, automation links, building from source.
+- [Source code on GitHub](https://github.com/NeelkanthTandel/recess)
+
+## Optional
+
+- [License (MIT)](https://github.com/NeelkanthTandel/recess/blob/main/LICENSE)
+- [Security policy](https://github.com/NeelkanthTandel/recess/blob/main/SECURITY.md)
+- [Report a problem](https://github.com/NeelkanthTandel/recess/issues)

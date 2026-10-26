@@ -5,14 +5,14 @@
 
 @font-face {
   font-family: "Instrument Serif";
-  src: url("fonts/InstrumentSerif-Regular.ttf") format("truetype");
+  src: url("fonts/InstrumentSerif-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Atkinson Hyperlegible Next";
-  src: url("fonts/AtkinsonHyperlegibleNext.ttf") format("truetype");
+  src: url("fonts/AtkinsonHyperlegibleNext.woff2") format("woff2");
   font-weight: 200 800;
   font-style: normal;
   font-display: swap;
@@ -388,6 +388,11 @@ h3 { font-family: var(--sans); font-size: 20px; font-weight: 700; line-height: 1
 .private p { margin-top: 20px; max-width: var(--measure); color: var(--ink-soft); }
 .build { max-width: 34em; }
 
+/* 7. Questions */
+.faq { width: 100%; max-width: 1240px; margin-inline: auto; padding: clamp(72px, 10vw, 140px) var(--gutter) 0; border-top: 1px solid var(--line); }
+.faq-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px clamp(32px, 6vw, 88px); margin-top: 48px; }
+.faq-item p { margin-top: 10px; max-width: var(--measure); color: var(--ink-soft); }
+
 /* 6. Dusk footer */
 .dusk {
   padding: clamp(96px, 14vw, 180px) var(--gutter) 36px;
@@ -412,7 +417,7 @@ h3 { font-family: var(--sans); font-size: 20px; font-weight: 700; line-height: 1
 /* Narrow screens */
 @media (max-width: 900px) {
   .hour, .install { grid-template-columns: minmax(0, 1fr); }
-  .moments, .panels { grid-template-columns: minmax(0, 1fr); }
+  .moments, .panels, .faq-list { grid-template-columns: minmax(0, 1fr); }
   .moments { margin-top: 32px; gap: 28px; }
 }
 @media (max-width: 600px) {

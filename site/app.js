@@ -16,7 +16,7 @@
   if (onWindows && download && note) {
     download.href = releases + "Recess-Setup.exe";
     download.textContent = "Download for Windows";
-    note.textContent = "Free and open source. For Windows 10 and 11, or ";
+    note.textContent = "For Windows 10 and 11, or ";
     const mac = document.createElement("a");
     mac.href = releases + "Recess.dmg";
     mac.textContent = "download for Mac";
