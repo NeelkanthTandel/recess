@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- The social image (site/assets/og.jpg): the sky from sky.html, the app icon and the name.
+     Render at 1200x630; see README.md in this folder. -->
+<style>
+@font-face { font-family: "Instrument Serif"; src: url("../../site/fonts/InstrumentSerif-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("../../site/fonts/AtkinsonHyperlegibleNext.woff2") format("woff2"); font-weight: 200 800; }
+html, body { margin: 0; background: #000; }
+.card { position: relative; width: 1200px; height: 630px; overflow: hidden; color: #fff; text-align: center; }
+.sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.scrim { position: absolute; inset: 0; background: radial-gradient(ellipse 46% 40% at 50% 66%, rgba(40, 70, 130, 0.32), rgba(40, 70, 130, 0)); }
+.copy { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 40px; }
+.copy img { width: 132px; height: 132px; filter: drop-shadow(0 10px 24px rgba(15, 26, 48, 0.3)); }
+h1 { margin: 6px 0 0; font: 400 150px/1 "Instrument Serif", serif; letter-spacing: -0.02em; text-shadow: 0 2px 30px rgba(31, 58, 110, 0.25); }
+p { margin: 18px 0 0; font: 600 34px/1.3 "Atkinson Hyperlegible Next", sans-serif; text-shadow: 0 1px 2px rgba(22, 42, 88, 0.55), 0 2px 18px rgba(22, 42, 88, 0.55); }
+p span { display: block; margin-top: 6px; font-weight: 400; font-size: 27px; opacity: 0.94; }
+</style></head><body>
+<div class="card">
+<svg class="sky" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d6bb8"/>
+      <stop offset="0.38" stop-color="#7ea5de"/>
+      <stop offset="0.64" stop-color="#bdd3ef"/>
+      <stop offset="0.84" stop-color="#f0d6c6"/>
+      <stop offset="1" stop-color="#f8e2cd"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="1.02" r="0.62">
+      <stop offset="0" stop-color="#ffe3b3" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffd4a2" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffd4a2" stop-opacity="0"/>
+    </radialGradient>
+    <!-- High, thin streaks of cloud -->
+    <filter id="wisps" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0016 0.011" numOctaves="6" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  3.2 0 0 0 -1.65"/>
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+    <!-- A soft bank of cumulus near the horizon -->
+    <filter id="bank" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0032 0.0062" numOctaves="7" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 0.98  0 0 0 0 0.96  5.2 0 0 0 -2.4" result="c"/>
+      <feGaussianBlur in="c" stdDeviation="0.8" result="soft"/>
+      <!-- light from below-left: a faint warm shade on the underside -->
+      <feOffset in="soft" dx="0" dy="11" result="shade"/>
+      <feColorMatrix in="shade" type="matrix" values="0 0 0 0 0.98  0 0 0 0 0.84  0 0 0 0 0.74  0 0 0 0.62 0" result="tint"/>
+      <feMerge><feMergeNode in="tint"/><feMergeNode in="soft"/></feMerge>
+    </filter>
+    <linearGradient id="bankMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.38" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.7" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="mb"><rect width="1600" height="1000" fill="url(#bankMask)"/></mask>
+    <linearGradient id="wispMask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.75"/>
+      <stop offset="0.55" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="0.8" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="mw"><rect width="1600" height="1000" fill="url(#wispMask)"/></mask>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <rect width="1600" height="1000" filter="url(#wisps)" mask="url(#mw)" opacity="0.7"/>
+  <rect width="1600" height="1000" filter="url(#bank)" mask="url(#mb)"/>
+</svg>
+  <div class="scrim"></div>
+  <div class="copy">
+    <img src="../../site/assets/icon.png" alt="">
+    <h1>Recess</h1>
+    <p>A free break reminder for Mac and Windows<span>Rest your eyes, stretch, get up. Open source, no account.</span></p>
+  </div>
+</div>
+</body></html>

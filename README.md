@@ -2,7 +2,7 @@
 
 # Recess
 
-**A free, open-source break reminder for Mac and Windows.** Recess dims your screen when it's time to rest your eyes, stretch or get up. You can postpone or skip when you're in the middle of something, and it notices when you've already stepped away.
+**A free, open-source break reminder for Mac and Windows.** Recess dims your screen when it's time to rest your eyes, stretch or get up. You can postpone or skip when you're in the middle of something, and it notices when you've already stepped away. Use it for the 20-20-20 rule against eye strain, regular stretch and posture breaks, or a Pomodoro-style work rhythm.
 
 **[Download for Mac](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess.dmg)** · **[Download for Windows](https://github.com/NeelkanthTandel/recess/releases/latest/download/Recess-Setup.exe)** · [Website](https://recess.always17.com/)
 
